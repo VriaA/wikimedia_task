@@ -1,0 +1,67 @@
+/* ============================== SELF HOSTED FONTS ==============================  */
+@font-face {
+  font-family: 'Alegreya';
+  font-display: swap;
+  font-style: normal;
+  font-weight: 100 900;
+  src: url(/fonts/alegreya-variable.ttf) format('truetype');
+}
+
+@font-face {
+  font-family: 'Bangers';
+  font-display: swap;
+  font-style: normal;
+  font-weight: normal;
+  src: url(/fonts/bangers-regular.ttf) format('truetype');
+}
+
+@font-face {
+  font-family: 'Fraunces';
+  font-display: swap;
+  font-style: normal;
+  font-weight: 100 900;
+  src: url(/fonts/fraunces-variable.ttf) format('truetype');
+}
+
+@font-face {
+  font-family: 'IbarraRealNova';
+  font-display: swap;
+  font-style: normal;
+  font-weight: 600;
+  src: url(/fonts/ibarra-real-nova-variable.ttf) format('truetype');
+}
+
+@font-face {
+  font-family: 'Roboto';
+  font-display: swap;
+  font-style: normal;
+  font-weight: 100 900;
+  src: url(/fonts/roboto-variable.ttf) format('truetype');
+}
+
+:root {
+  font-size: 10px; /* ROOT FONT SIZE CONVERTED TO 10PX FOR EASIER PIXELS TO REM CONVERSIONS  example; 32px = 3.2rem */
+}
+
+/* ============================== RESET ============================== */
+*,
+*::before,
+*::after,
+h1,
+h2,
+h3,
+h4,
+p,
+a,
+input,
+button {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  text-decoration: none;
+  background: none;
+}
+
+.heading {
+  font-family: 'Bangers', 'Arial', 'Helvetica', sans-serif;
+}
