@@ -4,5 +4,6 @@
     "no-descending-specificity": null,
     "declaration-no-important": null,
     "declaration-property-unit-disallowed-list": null
-  }
+  },
+  "ignoreFiles": ["dist/**/*.css"]
 }

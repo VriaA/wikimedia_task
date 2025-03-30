@@ -1,0 +1,145 @@
+.banner-wrapper {
+	width: 100%;
+	padding: 24px;
+	z-index: 100;
+	overflow: auto;
+}
+
+.banner {
+	position: relative;
+	width: 100%;
+	height: 220px;
+	padding: 20px;
+	background-color: #900;
+	border-radius: 2px;
+	overflow: hidden;
+	background-repeat: no-repeat;
+	background-size: cover;
+	background-position: center;
+	margin-inline: auto;
+	transition: 0.5s all ease-in-out;
+}
+
+.banner:has( a:focus ) {
+	outline-offset: 2px;
+	outline: 2px solid #36c;
+}
+
+.banner-heading {
+	position: absolute;
+	top: 20px;
+	left: 20px;
+	padding-top: 12px;
+	width: 100%;
+	color: #fff;
+	font: bold 1.6rem/1.5 sans-serif;
+	letter-spacing: 0.01em;
+	word-wrap: break-word;
+	border-top: 1px solid #fff;
+}
+
+.banner-bg-image-overlay {
+	position: absolute;
+	z-index: 0;
+	display: block;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	background-color: #202122a7;
+}
+
+.banner-overlay-link {
+	position: absolute;
+	z-index: 2;
+	display: block;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+}
+
+.banner-image {
+	display: block;
+	position: absolute;
+	top: 0;
+	left: 1150px;
+	height: 170px;
+	object-fit: cover;
+	object-position: center;
+}
+
+.close-banner-btn {
+	position: absolute;
+	z-index: 10;
+	top: 4px;
+	right: 4px;
+	width: 20px;
+	height: 20px;
+	border-radius: 50%;
+	background-color: #fff;
+	border: 2px solid #202122;
+}
+
+.mode-btn {
+	display: flex;
+	gap: 4px;
+	margin-inline: auto;
+	margin-block-start: 12px;
+	font: 500 1.4rem/1 sans-serif;
+	color: #36c;
+	border-width: 0;
+}
+
+.banner.selected {
+	outline: 2px solid #36c;
+	outline-offset: 2px;
+}
+
+.banner-heading.selected {
+	outline: 2px solid #36c;
+	outline-offset: 2px;
+	background-color: rgba( 51, 102, 204, 0.1 );
+}
+
+.banner-image.selected {
+	outline: 2px solid #36c;
+	outline-offset: 2px;
+}
+
+.edit .banner,
+.edit .banner-heading,
+.edit .banner-image {
+	cursor: pointer;
+}
+
+.banner-error-message {
+	margin: 12px auto auto auto;
+}
+
+/* ============================== MEDIA QUERIES ============================== */
+
+@media screen and ( min-width: 720px ) {
+	.banner {
+		height: 120px;
+	}
+
+	.banner-heading {
+		font-size: 2.2rem;
+		width: 50%;
+	}
+
+	.banner-image {
+		width: 132px;
+	}
+}
+
+@media screen and ( min-width: 1200px ) {
+	.banner-heading {
+		font-size: 2.2rem;
+	}
+
+	.banner-wrapper {
+		padding: 24px 44px;
+	}
+}

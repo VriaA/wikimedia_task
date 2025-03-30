@@ -1,0 +1,45 @@
+.message-container {
+	justify-content: space-between;
+	padding: 12px;
+	width: 100%;
+	height: 46px;
+	border-radius: 2px;
+}
+
+.message-container.notice {
+	background-color: #eaecf0;
+	border: 1px solid #72777d;
+}
+
+.message-container.warning {
+	background-color: #fdf2d5;
+	border: 1px solid #ab7f2a;
+}
+
+.message-container.error {
+	background-color: #ffe9e5;
+	border: 1px solid #f54739;
+}
+
+.message-container.success {
+	background-color: #dff2eb;
+	border: 1px solid #099979;
+}
+
+.message-text {
+	margin: auto auto auto 8px;
+	font: normal 1.4rem/2rem 'Inter', sans-serif;
+	color: #202122;
+}
+
+.close-message-button {
+	border-width: 0;
+}
+
+/* ============================== MEDIA QUERIES ============================== */
+
+@media screen and ( min-width: 720px ) {
+	.message-container {
+		max-width: 640px;
+	}
+}

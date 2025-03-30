@@ -1,0 +1,152 @@
+.editor-wrapper {
+	padding: 24px;
+	width: fit-content;
+	margin-inline: auto;
+	gap: 32px;
+}
+
+/* ============================== FORM ============================== */
+.customization-form {
+	gap: 32px;
+	width: 100%;
+}
+
+/* ===== TYPOGRAPHY ===== */
+.typography-inputs {
+	display: grid;
+	grid-template-areas:
+ 'textarea textarea'
+		'link link-label'
+		'font-family color'
+		'font-size font-weight'
+		'line-height letter-spacing';
+	gap: 16px;
+	padding-top: 16px;
+}
+
+.typography-link {
+	grid-area: link;
+}
+
+.typography-link-label {
+	grid-area: link-label;
+}
+
+.typography-textarea {
+	grid-area: textarea;
+}
+
+.typography-font-family {
+	grid-area: font-family;
+}
+
+.typography-color {
+	grid-area: color;
+}
+
+.typography-font-size {
+	grid-area: font-size;
+}
+
+.typography-font-weight {
+	grid-area: font-weight;
+}
+
+.typography-line-height {
+	grid-area: line-height;
+}
+
+.typography-letter-spacing {
+	grid-area: letter-spacing;
+}
+
+/* ===== LAYOUT ===== */
+
+.layout-inputs {
+	display: grid;
+	grid-template-columns: repeat( 2, 1fr );
+	grid-template-areas:
+ 'width height'
+		'padding padding'
+		'position position';
+	gap: 16px;
+	width: 100%;
+	padding-top: 16px;
+}
+
+.layout-padding {
+	grid-area: padding;
+}
+
+.layout-position {
+	grid-area: position;
+}
+
+.layout-padding-inputs,
+.layout-position-inputs,
+.appearance-border-inputs {
+	display: flex;
+	gap: 8px;
+}
+
+.layout-inputs .form-input-wrapper {
+	width: 100%;
+}
+
+/* ===== APPEARANCE ===== */
+
+.appearance-inputs {
+	display: grid;
+	grid-template-columns: repeat( 2, 1fr );
+	grid-template-areas:
+ 'border border'
+		'border-color bg-color'
+		'image-uploader image-uploader';
+	gap: 16px;
+	width: 100%;
+	padding-top: 16px;
+}
+
+.appearance-border {
+	grid-area: border;
+}
+
+.appearance-border-color {
+	grid-area: border-color;
+}
+
+.appearance-bg-color {
+	grid-area: bg-color;
+}
+
+.appearance-image-uploader {
+	grid-area: image-uploader;
+}
+
+/* ===== VIEWPORT ===== */
+
+.viewport-inputs .radio-option {
+	padding-top: 16px;
+	width: 100%;
+}
+
+/* ============================== MEDIA QUERIES ============================== */
+
+@media screen and ( min-width: 1200px ) {
+	.customization-form {
+		width: 948px;
+	}
+
+	.editor-wrapper .section-header {
+		width: 948px;
+	}
+
+	.typography-inputs {
+		grid-template-columns: repeat( 4, 1fr );
+		grid-template-areas:
+ 'textarea textarea textarea textarea'
+			'link link link-label link-label'
+			'font-family font-family color color'
+			'font-size font-weight line-height letter-spacing';
+	}
+}

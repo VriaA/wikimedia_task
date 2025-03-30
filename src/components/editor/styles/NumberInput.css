@@ -1,0 +1,30 @@
+.number-input-wrapper {
+	display: flex;
+	align-items: center;
+	padding: 4px 8px;
+	width: 100%;
+	height: 32px;
+	border: 1px solid #72777d;
+	border-radius: 2px;
+	gap: 8px;
+}
+
+.number-input-wrapper:focus-within {
+	outline: 1px solid #36c;
+}
+
+.number-input {
+	width: 100%;
+	height: 100%;
+	font: normal 1.4rem/1.4 sans-serif;
+	color: #202122;
+	text-align: center;
+	border-width: 0;
+	outline-width: 0;
+	padding: 0;
+}
+
+.unit-text {
+	font: normal 1.4rem/1 sans-serif;
+	color: #72777d;
+}

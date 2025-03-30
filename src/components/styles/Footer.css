@@ -1,0 +1,32 @@
+.footer {
+	margin-top: 160px;
+	padding: 24px;
+}
+
+.footer-inner {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	padding: 18px 0 24px 0;
+	border-top: 1px solid #a2a9b1;
+}
+
+.github-logo {
+	width: 32px;
+	height: 32px;
+}
+
+.footer-credit {
+	width: 135px;
+	height: 20px;
+	font: normal 1.2rem/1.68rem sans-serif;
+	color: #202122;
+}
+
+/* ============================== MEDIA QUERIES ============================== */
+
+@media ( max-width: 1440px ) {
+	.footer {
+		padding: 44px;
+	}
+}

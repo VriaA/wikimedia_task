@@ -1,0 +1,95 @@
+/* ============================== CONTENT ============================== */
+.content {
+	display: grid;
+	grid-template-areas:
+ 'heading heading'
+		'body body';
+	grid-auto-rows: auto;
+	column-gap: 24px;
+	padding: 0 24px;
+	max-width: 1212px;
+	margin-inline: auto;
+}
+
+.content-heading {
+	grid-area: heading;
+	font: italic normal 2.8rem/4rem 'Georgia', 'Times New Roman', 'Times', serif;
+	border-bottom: 1px solid #a2a9b1;
+}
+
+.content-body {
+	margin-top: 36px;
+	grid-area: body;
+}
+
+.content-body-text {
+	font: normal 1.6rem/2.56rem sans-serif;
+	color: #202122;
+}
+
+.content-subject {
+	font-weight: bold;
+	font-style: italic;
+}
+
+.content-body-text > a {
+	color: #36c;
+}
+
+/* ============================== APPEARANCE ==============================  */
+
+.appearance {
+	grid-area: appearance;
+	width: 196px;
+	padding: 0 16px;
+	gap: 6px;
+	display: none;
+	position: sticky;
+	top: 44px;
+}
+
+.appearance-header {
+	display: flex;
+	align-items: center;
+	padding-bottom: 6px;
+	border-bottom: 1px solid #eaecf0;
+	gap: 8px;
+}
+
+.appearance-title {
+	font: bold 1.4rem/2.2rem sans-serif;
+	color: #202122;
+}
+
+.hide-button {
+	padding: 4px 8px;
+	background-color: #eaecf0;
+	border-radius: 2px;
+	border-width: 0;
+	font: normal 1.2rem/1 sans-serif;
+	color: #202122;
+}
+
+/* ============================== MEDIA QUERIES ============================== */
+
+@media screen and ( min-width: 1200px ) {
+	.appearance {
+		display: flex;
+	}
+
+	.content {
+		grid-template-areas:
+ 'heading heading'
+			'body appearance';
+		grid-auto-rows: auto;
+		padding: 0 44px;
+	}
+
+	.content-body {
+		max-width: 948px;
+	}
+
+	.content-heading {
+		width: calc( 100% - 220px );
+	}
+}

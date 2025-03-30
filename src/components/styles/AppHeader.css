@@ -1,0 +1,145 @@
+/* ============================== HEADER ==============================  */
+.app-header {
+	height: 54px;
+	padding: 8px 24px;
+	background: #eaecf0;
+	box-shadow: 0 -1px 3px 0 #00000014 inset;
+}
+
+.main-menu-btn {
+	border-width: 0;
+	margin-right: 14px;
+}
+
+.main-heading {
+	font: 600 2rem/1 'IbarraRealNova', 'Georgia', 'Times New Roman', 'Times', serif;
+}
+
+.main-heading a {
+	color: #404244;
+}
+
+.editor-heading {
+	margin-inline: auto;
+}
+
+/* ============================== SEARCH INPUT ==============================  */
+.search-form {
+	display: none;
+	height: 36px;
+	margin-left: 40px;
+	border-radius: 2px;
+}
+
+.search-input-wrapper {
+	width: 375px;
+	height: 100%;
+	padding: 4px 8px;
+	background-color: #fff;
+	box-shadow: #a2a9b1 0 0 0 1px;
+	border-radius: 2px;
+	gap: 8px;
+}
+
+.search-input-wrapper:focus-within {
+	border: 2px solid #36c;
+}
+
+.search-icon {
+	width: 20px;
+	height: 20px;
+}
+
+.search-input {
+	width: 100%;
+	height: 100%;
+	outline-width: 0;
+	font: normal 1.4rem sans-serif;
+	border-width: 0;
+	line-height: 2rem;
+	color: #202122;
+}
+
+.search-input::placeholder {
+	color: #72777d;
+}
+
+.search-button {
+	align-items: center;
+	height: 32px;
+	padding: 4px 12px;
+	background-color: #f8f9fa;
+	border: 1px solid #72777d;
+	border-left-width: 0;
+	border-radius: 0 2px 2px 0;
+	font: bold 1.4rem/2rem sans-serif;
+	color: #202122;
+	text-align: center;
+}
+
+/* ============================== SEARCH ICON BUTTON ==============================  */
+.search-icon-button {
+	margin-inline-start: auto;
+	border-width: 0;
+}
+
+/* ============================== PERSONAL TOOLS ==============================  */
+
+.app-header-nav {
+	margin-inline-start: auto;
+}
+
+.app-header-nav-list {
+	padding: 0 4px;
+	gap: 8px;
+	list-style-type: none;
+}
+
+.app-header-nav-link {
+	font: normal 1.4rem/1.7rem sans-serif;
+	color: #36c;
+}
+
+.personal-tools {
+	border-width: 0;
+}
+
+@media screen and ( min-width: 720px ) {
+	.main-menu-btn > svg {
+		fill: #202122;
+	}
+
+	.search-form {
+		display: flex;
+	}
+
+	.main-heading a {
+		color: #101418;
+	}
+}
+
+/* ============================== MEDIA QUERIES ============================== */
+
+@media screen and ( min-width: 1200px ) {
+	.app-header {
+		background-color: #fff;
+		padding: 0 44px;
+		height: 66px;
+		box-shadow: none;
+	}
+
+	.main-heading {
+		font-size: 2.8rem;
+	}
+
+	.search-form {
+		width: 407px;
+		height: 32px;
+	}
+
+	.search-input-wrapper {
+		box-shadow: none;
+		border: 1px solid #72777d;
+		border-radius: 2px 0 0 2px;
+	}
+}

@@ -19,7 +19,7 @@
     "moduleResolution": "bundler",
     "resolveJsonModule": true,
     "isolatedModules": true,
-    "jsx": "react-jsx",
+    "jsx": "react",
     "incremental": true,
     "baseUrl": ".",
     "types": [
@@ -33,6 +33,5 @@
     }
   },
 
-  "include": ["src/**/*", "tests/**/*", "vite.config.ts"],
-  "exclude": ["node_modules"]
+  "include": ["src", "src/types/custom.d.ts"]
 }
