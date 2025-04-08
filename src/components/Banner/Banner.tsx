@@ -116,6 +116,7 @@ export default function Banner() {
 
       {mode === 'edit' && selectedElement && (
         <button
+          type='button'
           className='deselect-btn flex-center'
           onClick={handleCloseBtnClick}
           aria-label='Deselect selected element'
