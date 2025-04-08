@@ -20,7 +20,7 @@ const initialBannerStyle: BannerElementStyle = {
   backgroundImage: '',
   bannerLink:
     'https://tv.apple.com/us/show/severance/umc.cmc.1srk2goyh2q2zdxcx605w8vtx',
-  bannerLinkLabel: 'Watch Severance on Apple Tv.'
+  dir: 'ltr'
 };
 
 const initialBannerStyleTablet: BannerElementStyle = {
@@ -34,7 +34,7 @@ const initialBannerStyleMobile: BannerElementStyle = {
   backgroundImage: '/images/severance_work.jpg'
 };
 
-const initialHeadingStyle: BannerElementStyle = {
+const initialtextStyle: BannerElementStyle = {
   textContent: 'Your Outie loves contributing to Open Source Software.',
   fontFamily: 'sans-serif',
   fontSize: 22,
@@ -63,15 +63,15 @@ const initialHeadingStyle: BannerElementStyle = {
   borderColor: '#FFFFFF'
 };
 
-const initialHeadingStyleMobile: BannerElementStyle = {
-  ...initialHeadingStyle,
+const initialtextStyleMobile: BannerElementStyle = {
+  ...initialtextStyle,
   fontSize: 18,
   width: 300,
   textContent: 'The work is mysterious and important.'
 };
 
-const initialHeadingStyleTablet: BannerElementStyle = {
-  ...initialHeadingStyle,
+const initialtextStyleTablet: BannerElementStyle = {
+  ...initialtextStyle,
   width: 380,
   textContent: 'Enjoy each contribution equally.'
 };
@@ -91,7 +91,8 @@ const initialImageStyle: BannerElementStyle = {
   },
   borderColor: '',
 
-  src: '/images/ms_casey.png'
+  src: '/images/ms_casey.png',
+  imgAlt: "​Miss Casey from 'Severance' in a teal uniform with a Lumon pin"
 };
 
 const initialImageStyleTablet: BannerElementStyle = {
@@ -105,10 +106,10 @@ export const initialElements: BannerElements = {
     tablet: initialBannerStyleTablet,
     desktop: initialBannerStyle
   },
-  heading: {
-    mobile: initialHeadingStyleMobile,
-    tablet: initialHeadingStyleTablet,
-    desktop: initialHeadingStyle
+  text: {
+    mobile: initialtextStyleMobile,
+    tablet: initialtextStyleTablet,
+    desktop: initialtextStyle
   },
   image: {
     mobile: initialImageStyle,
@@ -142,28 +143,28 @@ export function getCurrentBannerStyle(
   };
 }
 
-export function getCurrentHeadingStyle(headingStyles: BannerElementStyle) {
+export function getCurrenttextStyle(textStyles: BannerElementStyle) {
   return {
-    color: headingStyles.color,
-    fontFamily: headingStyles.fontFamily,
-    fontSize: headingStyles.fontSize,
-    fontWeight: headingStyles.fontWeight,
-    lineHeight: headingStyles.lineHeight,
-    letterSpacing: headingStyles.letterSpacing,
-    paddingTop: headingStyles.padding?.top,
-    paddingLeft: headingStyles.padding?.left,
-    paddingBottom: headingStyles.padding?.bottom,
-    paddingRight: headingStyles.padding?.right,
-    top: headingStyles.position?.top,
-    left: headingStyles.position?.left,
-    width: headingStyles.width,
-    height: headingStyles.height,
-    borderTopWidth: headingStyles.border?.top,
-    borderBottomWidth: headingStyles.border?.bottom,
-    borderLeftWidth: headingStyles.border?.left,
-    borderRightWidth: headingStyles.border?.right,
+    color: textStyles.color,
+    fontFamily: textStyles.fontFamily,
+    fontSize: textStyles.fontSize,
+    fontWeight: textStyles.fontWeight,
+    lineHeight: textStyles.lineHeight,
+    letterSpacing: textStyles.letterSpacing,
+    paddingTop: textStyles.padding?.top,
+    paddingLeft: textStyles.padding?.left,
+    paddingBottom: textStyles.padding?.bottom,
+    paddingRight: textStyles.padding?.right,
+    top: textStyles.position?.top,
+    left: textStyles.position?.left,
+    width: textStyles.width,
+    height: textStyles.height,
+    borderTopWidth: textStyles.border?.top,
+    borderBottomWidth: textStyles.border?.bottom,
+    borderLeftWidth: textStyles.border?.left,
+    borderRightWidth: textStyles.border?.right,
     borderStyle: 'solid',
-    borderColor: headingStyles.borderColor
+    borderColor: textStyles.borderColor
   };
 }
 

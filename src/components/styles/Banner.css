@@ -8,9 +8,6 @@
 .banner {
 	position: relative;
 	width: 100%;
-	height: 220px;
-	padding: 20px;
-	background-color: #900;
 	border-radius: 2px;
 	overflow: hidden;
 	background-repeat: no-repeat;
@@ -25,17 +22,26 @@
 	outline: 2px solid #36c;
 }
 
-.banner-heading {
-	position: absolute;
-	top: 20px;
-	left: 20px;
-	padding-top: 12px;
+.banner:focus,
+.banner-text:focus,
+.banner-image:focus {
+	outline: 3px solid #233566;
+	outline-offset: 3px;
+	border-radius: 2px;
+}
+
+.banner-link {
+	display: block;
 	width: 100%;
+	height: 100%;
+}
+
+.banner-text {
+	position: absolute;
 	color: #fff;
-	font: bold 1.6rem/1.5 sans-serif;
 	letter-spacing: 0.01em;
 	word-wrap: break-word;
-	border-top: 1px solid #fff;
+	white-space: pre-wrap;
 }
 
 .banner-bg-image-overlay {
@@ -49,22 +55,9 @@
 	background-color: #202122a7;
 }
 
-.banner-overlay-link {
-	position: absolute;
-	z-index: 2;
-	display: block;
-	top: 0;
-	left: 0;
-	width: 100%;
-	height: 100%;
-}
-
 .banner-image {
 	display: block;
 	position: absolute;
-	top: 0;
-	left: 1150px;
-	height: 170px;
 	object-fit: cover;
 	object-position: center;
 }
@@ -91,12 +84,16 @@
 	border-width: 0;
 }
 
+.selected {
+	border-radius: 1px;
+}
+
 .banner.selected {
 	outline: 2px solid #36c;
 	outline-offset: 2px;
 }
 
-.banner-heading.selected {
+.banner-text.selected {
 	outline: 2px solid #36c;
 	outline-offset: 2px;
 	background-color: rgba( 51, 102, 204, 0.1 );
@@ -108,7 +105,7 @@
 }
 
 .edit .banner,
-.edit .banner-heading,
+.edit .banner-text,
 .edit .banner-image {
 	cursor: pointer;
 }
@@ -117,28 +114,26 @@
 	margin: 12px auto auto auto;
 }
 
-/* ============================== MEDIA QUERIES ============================== */
-
-@media screen and ( min-width: 720px ) {
-	.banner {
-		height: 120px;
-	}
-
-	.banner-heading {
-		font-size: 2.2rem;
-		width: 50%;
-	}
-
-	.banner-image {
-		width: 132px;
-	}
+/* ===== DESELECT BUTTON ===== */
+.deselect-btn {
+	position: fixed;
+	padding: 12px;
+	border-radius: 50%;
+	width: fit-content;
+	height: fit-content;
+	inset: 0;
+	margin: auto auto 8px auto;
+	background-color: #f8f9fa;
+	border: 1px solid #a2a9b1;
 }
 
-@media screen and ( min-width: 1200px ) {
-	.banner-heading {
-		font-size: 2.2rem;
-	}
+.deselect-btn:hover {
+	background-color: #f2f3f4;
+}
 
+/* ============================== MEDIA QUERIES ============================== */
+
+@media screen and ( min-width: 1200px ) {
 	.banner-wrapper {
 		padding: 24px 44px;
 	}

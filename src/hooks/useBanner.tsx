@@ -9,13 +9,13 @@ import {
 } from '../types/banner';
 import {
   getCurrentBannerStyle,
-  getCurrentHeadingStyle,
+  getCurrenttextStyle,
   getCurrentImageStyle
 } from '../components/styles/BannerElements';
-import ColorContrastChecker from 'color-contrast-checker';
+import tinycolor from 'tinycolor2';
 
 export default function useBanner(
-  bannerRef: React.RefObject<HTMLDivElement | null>
+  bannerRef?: React.RefObject<HTMLDivElement | null>
 ): UseBanner {
   const { mode, setMode } = useContext(appContext) as AppContext;
   const { elements, selectedElement, setSelectedElement, currentViewport } =
@@ -29,17 +29,24 @@ export default function useBanner(
     useState<boolean>(false);
 
   const bannerStyles = elements.banner[activeViewport];
-  const headingStyles = elements.heading[activeViewport];
+  const textStyles = elements.text[activeViewport];
   const imageStyles = elements.image[activeViewport];
 
   const bannerStyle = getCurrentBannerStyle(bannerStyles, mode, bannerWidth);
-  const headingStyle = getCurrentHeadingStyle(headingStyles);
+  const textStyle = getCurrenttextStyle(textStyles);
   const imageStyle = getCurrentImageStyle(imageStyles);
 
   const bannerPosition =
     selectedElement && mode === 'edit'
       ? { position: 'sticky' as const, top: '20px' }
       : {};
+
+  // FOCUSES ON THE BANNER WHEN THE MODE IS SWITCHED TO EDIT
+  useEffect(() => {
+    if (mode === 'edit') {
+      bannerRef?.current?.focus();
+    }
+  }, [mode, bannerRef]);
 
   // SCROLLS TO THE TOP WHEN A BANNER ELEMENT IS DESELECTED
   useEffect(() => {
@@ -117,35 +124,43 @@ export default function useBanner(
 
   // CHECKS CONTRAST AND CHANGES CONTRAST MESSAGE VISIBILITY ACCORDINGLY
   useEffect(() => {
-    const ccc = new ColorContrastChecker();
-    if (bannerStyle.backgroundColor && headingStyle.color) {
-      const isContrastGood = ccc.isLevelAA(
-        headingStyle.color,
+    if (bannerStyle.backgroundColor && textStyle.color) {
+      const fontSize = textStyle.fontSize;
+      const isBold =
+        textStyle.fontWeight &&
+        ['700', '800', '900'].includes(textStyle.fontWeight);
+
+      // WCAG LARGE TEXT DEFINITION (19pts or 14pts bold)
+      const isLargeText =
+        fontSize && (fontSize >= 24 || (fontSize >= 18.67 && isBold));
+
+      const isValidContrastRatio = tinycolor.isReadable(
+        textStyle.color,
         bannerStyle.backgroundColor,
-        headingStyle.fontSize
+        {
+          level: 'AA',
+          size: isLargeText ? 'large' : 'small'
+        }
       );
-      isContrastGood
-        ? setCanShowContrastMessage(false)
-        : setCanShowContrastMessage(true);
+      setCanShowContrastMessage(!isValidContrastRatio);
     }
-  }, [headingStyle.color, bannerStyle.backgroundColor, headingStyle.fontSize]);
+  }, [
+    textStyle.color,
+    bannerStyle.backgroundColor,
+    textStyle.fontSize,
+    textStyle.fontWeight
+  ]);
 
   // TOGGLES MODE BETWEEN EDIT & PREVIEW
   function toggleMode() {
     setMode((prevMode) => (prevMode === 'preview' ? 'edit' : 'preview'));
   }
 
-  // HANDLES BANNER ELEMENT SELECTIONS
-  function handleBannerClick(e: React.MouseEvent) {
-    if (mode !== 'edit') return;
-
-    e.preventDefault();
-
-    const target = e.target as HTMLElement;
+  function selectElement(target: HTMLElement) {
     let elementType: BannerElementType = null;
     switch (target.dataset.element) {
-      case 'heading':
-        elementType = 'heading';
+      case 'text':
+        elementType = 'text';
         break;
       case 'image':
         elementType = 'image';
@@ -154,10 +169,41 @@ export default function useBanner(
         elementType = 'banner';
         break;
     }
-    setSelectedElement(elementType);
+    return elementType;
+  }
+
+  // SELECTS BANNER ELEMENT ON CLICK
+  function handleBannerClick(e: React.MouseEvent) {
+    if (mode !== 'edit') return;
+    const target = e.target as HTMLElement;
+    const selectedElement = selectElement(target);
+    setSelectedElement(selectedElement);
+  }
+
+  // SELECTS OR DESELECTS BANNER ELEMENT ON KEY PRESS
+  function handleKeyDown(e: React.KeyboardEvent) {
+    if (mode !== 'edit') return;
+
+    if (selectedElement && e.key === 'Escape') {
+      e.preventDefault();
+      setSelectedElement(null);
+      return;
+    }
+
+    if (e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault();
+      const newSelectedElement = selectElement(e.target as HTMLElement);
+      setSelectedElement(newSelectedElement);
+    }
+  }
+
+  function handleCloseBtnClick() {
+    setSelectedElement(null);
+    bannerRef?.current && bannerRef?.current.focus();
   }
 
   return {
+    handleCloseBtnClick,
     canShowContrastMessage,
     setCanShowContrastMessage,
     selectedElement,
@@ -165,12 +211,13 @@ export default function useBanner(
     setIsVisible,
     toggleMode,
     handleBannerClick,
+    handleKeyDown,
     bannerStyle,
-    headingStyle,
+    textStyle,
     imageStyle,
     bannerPosition,
     bannerStyles,
-    headingStyles,
+    textStyles,
     imageStyles
   };
 }

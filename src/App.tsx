@@ -1,7 +1,7 @@
 import React from 'react';
 import { BannerContextProvider } from './contexts/BannerContext';
 import AppHeader from './components/AppHeader';
-import Banner from './components/Banner';
+import Banner from './components/banner/Banner';
 import PreviewEditor from './components/PreviewEditor';
 import AppContextProvider from './contexts/AppContext';
 import Footer from './components/Footer';

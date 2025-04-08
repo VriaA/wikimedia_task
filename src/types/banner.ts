@@ -1,4 +1,4 @@
-export type BannerElementType = 'heading' | 'image' | 'banner' | null;
+export type BannerElementType = 'text' | 'image' | 'banner' | null;
 
 export type ViewportType = 'mobile' | 'tablet' | 'desktop';
 
@@ -38,8 +38,9 @@ export type BannerElementStyle = {
   backgroundColor?: string;
   backgroundImage?: string;
   bannerLink?: string | undefined;
-  bannerLinkLabel?: string | undefined;
   src?: string;
+  imgAlt?: string;
+  dir?: string;
 };
 
 export type BannerElements = {
@@ -48,7 +49,7 @@ export type BannerElements = {
     tablet: BannerElementStyle;
     desktop: BannerElementStyle;
   };
-  heading: {
+  text: {
     mobile: BannerElementStyle;
     tablet: BannerElementStyle;
     desktop: BannerElementStyle;
@@ -74,6 +75,7 @@ export type BannerPosition =
   | { position?: undefined; top?: undefined };
 
 export type UseBanner = {
+  handleCloseBtnClick: () => void;
   canShowContrastMessage: boolean;
   setCanShowContrastMessage: React.Dispatch<React.SetStateAction<boolean>>;
   selectedElement: BannerElementType;
@@ -81,11 +83,12 @@ export type UseBanner = {
   setIsVisible: React.Dispatch<React.SetStateAction<boolean>>;
   toggleMode: () => void;
   handleBannerClick: (e: React.MouseEvent) => void;
+  handleKeyDown: (e: React.KeyboardEvent) => void;
   bannerStyle: React.CSSProperties;
-  headingStyle: React.CSSProperties;
+  textStyle: React.CSSProperties;
   imageStyle: React.CSSProperties;
   bannerPosition: BannerPosition;
   bannerStyles: BannerElementStyle;
-  headingStyles: BannerElementStyle;
+  textStyles: BannerElementStyle;
   imageStyles: BannerElementStyle;
 };
