@@ -131,6 +131,10 @@ export default function DropdownMenu({
     }
   }
 
+  const triggerText = selectedOption
+    ? selectedOption.label
+    : 'Choose an option';
+
   return (
     <div
       className={`dropdown flex-column ${className} ${disabled ? 'disabled' : ''}`}
@@ -153,11 +157,10 @@ export default function DropdownMenu({
         aria-expanded={isOpen}
         aria-haspopup='listbox'
         aria-controls={`${id}-options`}
-        aria-selected={!!selectedOption}
         aria-activedescendant={isOpen ? options[focusedIndex].id : undefined}
+        aria-label={triggerText}
         {...(disabled && { disabled: true })}>
-        {selectedOption ? selectedOption.label : 'Choose an option'}
-
+        {triggerText}
         <DropdownIcon
           className={`${isOpen ? 'rotate-180' : ''} dropdown-icon`}
           aria-hidden='true'
