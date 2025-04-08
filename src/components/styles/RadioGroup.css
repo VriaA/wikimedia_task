@@ -1,12 +1,10 @@
 .radio-group-wrapper {
-	display: flex;
-	flex-direction: column;
 	gap: 6px;
+	border-width: 0;
 }
 
 .radio-group-heading {
-	display: flex;
-	flex-direction: column;
+	width: 100%;
 	padding: 6px 0 8px 0;
 	height: 31px;
 	font: normal 1.4rem/1.7rem sans-serif;
@@ -19,7 +17,6 @@
 
 .radio-group {
 	display: flex;
-	flex-direction: column;
 	padding: 6px 0;
 	gap: 12px;
 }

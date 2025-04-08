@@ -12,7 +12,7 @@ type RadioGroupProps = {
   name: string;
   options: RadioOption[];
   value: string;
-  onChange: (event: React.FormEvent<HTMLInputElement>) => void;
+  onChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
   direction?: 'row' | 'column';
 };
 
@@ -22,11 +22,13 @@ export default function RadioGroup({
   options,
   value,
   onChange,
-  direction
+  direction = 'column'
 }: RadioGroupProps) {
   return (
-    <div className='radio-group-wrapper'>
-      {heading && <h3 className='radio-group-heading'>{heading}</h3>}
+    <fieldset className='radio-group-wrapper flex-column'>
+      {heading && (
+        <legend className='radio-group-heading  flex-column'>{heading}</legend>
+      )}
       <div
         className='radio-group'
         style={{ flexDirection: direction === 'row' ? 'row' : 'column' }}>
@@ -49,6 +51,6 @@ export default function RadioGroup({
           </label>
         ))}
       </div>
-    </div>
+    </fieldset>
   );
 }
