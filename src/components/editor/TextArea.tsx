@@ -1,10 +1,10 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import './styles/TextArea.css';
 
 type TextAreaProps = {
   label: string;
   placeholder?: string;
-  onChange?: (value: string) => void;
+  onChange: (value: string) => void;
   value?: string;
   className?: string;
   disabled: boolean;
@@ -20,32 +20,27 @@ export default function TextArea({
   disabled,
   id
 }: TextAreaProps) {
-  const [textValue, setTextValue] = useState('');
-
-  useEffect(() => {
-    setTextValue(value ? value : '');
-  }, [value]);
-
-  function handleChange(e: React.ChangeEvent<HTMLTextAreaElement>) {
-    setTextValue(e.target.value);
-    if (onChange) {
-      onChange(e.target.value);
-    }
-  }
+  const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) =>
+    onChange(e.target.value);
 
   return (
     <div
       className={`text-area-container ${className} ${disabled ? 'disabled' : ''}`}
       data-testid={id}>
-      <label className='form-label'>{label}</label>
-      <textarea
-        className={`text-area-input ${className}`}
-        value={textValue}
-        onChange={handleChange}
-        placeholder={placeholder}
-        data-testid={`${id}-input`}
-        {...(disabled && { disabled: true })}
-      />
+      <label
+        htmlFor={`${id}-input`}
+        className='form-label'>
+        {label}
+        <textarea
+          id={`${id}-input`}
+          className={`text-area-input ${className}`}
+          value={value}
+          onChange={handleChange}
+          placeholder={placeholder}
+          data-testid={`${id}-input`}
+          {...(disabled && { disabled: true })}
+        />
+      </label>
     </div>
   );
 }

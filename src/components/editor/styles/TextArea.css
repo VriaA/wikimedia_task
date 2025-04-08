@@ -17,6 +17,10 @@
 	color: #202122;
 }
 
+.text-area-input:focus-visible {
+	outline: 1px solid #36c;
+}
+
 .text-area-input::placeholder {
 	color: #72777d;
 }
