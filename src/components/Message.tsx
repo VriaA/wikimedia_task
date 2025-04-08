@@ -17,9 +17,14 @@ interface MessageProps {
 function Message({ onClose, type, className, id, message }: MessageProps) {
   return (
     <div
+      role={type === 'error' ? 'alert' : 'status'}
+      aria-live={type === 'error' ? 'assertive' : 'polite'}
+      aria-atomic='true'
       className={`message-container ${type} ${className} flex-center-y`}
       data-testid={id}>
-      <div className='message-icon'>
+      <div
+        className='message-icon'
+        aria-hidden='true'>
         {type === 'notice' && <NoticeIcon />}
         {type === 'warning' && <WarningIcon />}
         {type === 'error' && <ErrorIcon />}
@@ -35,10 +40,12 @@ function Message({ onClose, type, className, id, message }: MessageProps) {
           data-testid={`${id}-close-btn`}
           className='close-message-button'
           onClick={onClose}
-          aria-label='Close message'>
+          aria-label='Close message'
+          type='button'>
           <CloseIcon
             width={18}
             height={20}
+            aria-hidden='true'
           />
         </button>
       )}
