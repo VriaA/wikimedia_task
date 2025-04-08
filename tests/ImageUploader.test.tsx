@@ -1,35 +1,10 @@
-import React, { act } from 'react';
-import { render, screen } from '@testing-library/react';
-import { BannerContextProvider } from '../src/contexts/BannerContext';
-import AppContextProvider from '../src/contexts/AppContext';
-import App from '../src/App';
+import { screen } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import userEvent from '@testing-library/user-event';
+import switchToEditMode from './editor/EditorSetUp';
 
 describe('ImageUploader Component', () => {
-  beforeAll(() => {
-    Object.defineProperty(window, 'scroll', {
-      value: jest.fn(),
-      writable: true
-    });
-  });
-
-  beforeEach(async () => {
-    render(
-      <AppContextProvider>
-        <BannerContextProvider>
-          <App />
-        </BannerContextProvider>
-      </AppContextProvider>
-    );
-    const modeButton = await screen.findByTestId('mode-btn');
-    await userEvent.click(modeButton);
-
-    act(() => {
-      window.scroll({ top: 0 });
-      window.dispatchEvent(new Event('scroll'));
-    });
-  });
+  switchToEditMode();
 
   it('shows ImageUploader when selectedElement is "banner"', async () => {
     const banner = screen.getByTestId('banner');
@@ -48,8 +23,8 @@ describe('ImageUploader Component', () => {
   });
 
   it('does not show ImageUploader for other elements', async () => {
-    const headingElement = screen.getByTestId('heading');
-    await userEvent.click(headingElement);
+    const bannerText = screen.getByTestId('banner-text');
+    await userEvent.click(bannerText);
 
     expect(screen.queryByTestId('image-uploader')).not.toBeInTheDocument();
   });

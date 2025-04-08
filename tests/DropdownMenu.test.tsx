@@ -1,5 +1,5 @@
 import React from 'react';
-import { render, screen, waitFor, cleanup } from '@testing-library/react';
+import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import DropdownMenu from '../src/components/editor/DropdownMenu';
 import '@testing-library/jest-dom';
@@ -11,21 +11,38 @@ const options = [
 ];
 
 describe('DropdownMenu', () => {
-  beforeEach(() => {
-    cleanup();
-  });
-
-  it('renders the dropdown with default text', () => {
+  it('renders the dropdown with default text when there is no default option', () => {
     render(
       <DropdownMenu
         id='test-dropdown'
         label='Test Dropdown'
         options={options}
         disabled={false}
+        onChange={() => ''}
       />
     );
 
     expect(screen.getByText('Choose an option')).toBeInTheDocument();
+    expect(screen.queryByText('Option One')).not.toBeInTheDocument();
+    expect(screen.queryByText('Option Two')).not.toBeInTheDocument();
+    expect(screen.queryByText('Option One')).not.toBeInTheDocument();
+  });
+
+  it('renders the dropdown with default selected value', () => {
+    render(
+      <DropdownMenu
+        id='test-dropdown'
+        label='Test Dropdown'
+        options={options}
+        disabled={false}
+        onChange={() => ''}
+        value='three'
+      />
+    );
+
+    expect(screen.getByText('Option Three')).toBeInTheDocument();
+    expect(screen.queryByText('Option Two')).not.toBeInTheDocument();
+    expect(screen.queryByText('Option One')).not.toBeInTheDocument();
   });
 
   it('opens the dropdown when clicked', async () => {
@@ -35,15 +52,14 @@ describe('DropdownMenu', () => {
         label='Test Dropdown'
         options={options}
         disabled={false}
+        onChange={() => ''}
       />
     );
 
-    const dropdownButton = screen.getByTestId('test-dropdown-select');
+    const dropdownButton = screen.getByTestId('test-dropdown-trigger');
     await userEvent.click(dropdownButton);
 
-    await waitFor(() => {
-      expect(screen.getByTestId('test-dropdown-options')).toBeInTheDocument();
-    });
+    expect(screen.getByTestId('test-dropdown-options')).toBeInTheDocument();
   });
 
   it('selects an option when clicked', async () => {
@@ -53,10 +69,11 @@ describe('DropdownMenu', () => {
         label='Test Dropdown'
         options={options}
         disabled={false}
+        onChange={() => ''}
       />
     );
 
-    const dropdownButton = screen.getByTestId('test-dropdown-select');
+    const dropdownButton = screen.getByTestId('test-dropdown-trigger');
     await userEvent.click(dropdownButton);
 
     const option = screen.getByTestId('option-2');
@@ -72,19 +89,53 @@ describe('DropdownMenu', () => {
         label='Test Dropdown'
         options={options}
         disabled={false}
+        onChange={() => ''}
       />
     );
 
-    const dropdownButton = screen.getByTestId('test-dropdown-select');
+    const dropdownButton = screen.getByTestId('test-dropdown-trigger');
     await userEvent.click(dropdownButton);
     expect(screen.getByTestId('test-dropdown-options')).toBeInTheDocument();
 
     await userEvent.click(document.body);
-    await waitFor(() => {
-      expect(
-        screen.queryByTestId('test-dropdown-options')
-      ).not.toBeInTheDocument();
-    });
+
+    expect(
+      screen.queryByTestId('test-dropdown-options')
+    ).not.toBeInTheDocument();
+  });
+
+  it('focuses on the first element when there is no default value', async () => {
+    render(
+      <DropdownMenu
+        id='test-dropdown'
+        label='Test Dropdown'
+        options={options}
+        disabled={false}
+        onChange={() => ''}
+      />
+    );
+
+    const dropdownButton = screen.getByTestId('test-dropdown-trigger');
+    await userEvent.click(dropdownButton);
+
+    expect(screen.getByTestId('option-1')).toHaveClass('focused-option');
+  });
+
+  it('focuses on the default option when there is a default value', async () => {
+    render(
+      <DropdownMenu
+        id='test-dropdown'
+        label='Test Dropdown'
+        options={options}
+        disabled={false}
+        onChange={() => ''}
+        value='two'
+      />
+    );
+    const dropdownButton = screen.getByTestId('test-dropdown-trigger');
+    await userEvent.click(dropdownButton);
+
+    expect(screen.getByTestId('option-2')).toHaveClass('focused-option');
   });
 
   it('handles keyboard navigation', async () => {
@@ -94,33 +145,50 @@ describe('DropdownMenu', () => {
         label='Test Dropdown'
         options={options}
         disabled={false}
+        onChange={() => ''}
       />
     );
 
-    const dropdownButton = screen.getByTestId('test-dropdown-select');
+    const dropdownButton = screen.getByTestId('test-dropdown-trigger');
     await userEvent.click(dropdownButton);
     expect(screen.getByTestId('test-dropdown-options')).toBeInTheDocument();
 
     await userEvent.keyboard('{ArrowDown}');
-    expect(screen.getByTestId('option-2')).toHaveFocus();
-
-    await userEvent.keyboard('{ArrowRight}');
-    expect(screen.getByTestId('option-3')).toHaveFocus();
+    expect(screen.getByTestId('option-2')).toHaveClass('focused-option');
 
     await userEvent.keyboard('{ArrowUp}');
-    expect(screen.getByTestId('option-2')).toHaveFocus();
+    expect(screen.getByTestId('option-1')).toHaveClass('focused-option');
 
     await userEvent.keyboard('{ArrowLeft}');
-    expect(screen.getByTestId('option-1')).toHaveFocus();
+    expect(screen.getByTestId('option-1')).toHaveClass('focused-option');
 
-    await userEvent.keyboard('{Enter}');
-    expect(dropdownButton).toHaveTextContent('Option One');
+    await userEvent.keyboard('{End}');
+    expect(screen.getByTestId('option-3')).toHaveClass('focused-option');
+
+    await userEvent.keyboard('{Home}');
+    expect(screen.getByTestId('option-1')).toHaveClass('focused-option');
 
     await userEvent.keyboard('{Tab}');
-    expect(screen.getByTestId('option-2')).toHaveFocus();
+    expect(screen.getByTestId('test-dropdown-trigger')).toHaveTextContent(
+      'Option One'
+    );
+    expect(screen.getByTestId('test-dropdown-trigger')).toHaveFocus();
+    expect(
+      screen.queryByTestId('test-dropdown-options')
+    ).not.toBeInTheDocument();
 
-    await userEvent.keyboard('{Shift>}{Tab}{/Shift}');
-    expect(screen.getByTestId('option-1')).toHaveFocus();
+    await userEvent.keyboard('{Enter}');
+    expect(screen.getByTestId('test-dropdown-options')).toBeInTheDocument();
+    expect(screen.getByTestId('option-1')).toHaveClass('focused-option');
+
+    await userEvent.keyboard(' ');
+    expect(screen.getByTestId('test-dropdown-trigger')).toHaveTextContent(
+      'Option One'
+    );
+    expect(screen.getByTestId('test-dropdown-trigger')).toHaveFocus();
+    expect(
+      screen.queryByTestId('test-dropdown-options')
+    ).not.toBeInTheDocument();
   });
 
   it('does not open when disabled', async () => {
@@ -130,10 +198,11 @@ describe('DropdownMenu', () => {
         label='Test Dropdown'
         options={options}
         disabled={true}
+        onChange={() => ''}
       />
     );
 
-    const dropdownButton = screen.getByTestId('test-dropdown-select');
+    const dropdownButton = screen.getByTestId('test-dropdown-trigger');
     expect(dropdownButton).toBeDisabled();
     await userEvent.click(dropdownButton);
     expect(
