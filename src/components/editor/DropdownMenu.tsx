@@ -1,5 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import DropdownIcon from '../../assets/dropdown_icon.svg?react';
+import CheckIcon from '../../assets/check.svg?react';
 import type { Option } from '../../types/editor';
 import './styles/DropdownMenu.css';
 
@@ -7,10 +8,10 @@ type DropdownMenuProps = {
   id: string;
   label: string;
   value?: string;
-  onChange?: (value: string) => void;
+  onChange: (value: string) => void;
   options: Option[];
   className?: string;
-  disabled: boolean;
+  disabled?: boolean;
 };
 
 export default function DropdownMenu({
@@ -23,21 +24,30 @@ export default function DropdownMenu({
   disabled
 }: DropdownMenuProps) {
   const [isOpen, setIsOpen] = useState(false);
-  const [selectedOption, setSelectedOption] = useState<Option | null>(
-    value ? options.find((option) => option.value === value) || null : null
-  );
-
+  const [selectedOption, setSelectedOption] = useState<Option | null>(null);
   const [focusedIndex, setFocusedIndex] = useState<number>(-1);
   const dropdownRef = useRef<HTMLButtonElement>(null);
   const optionsRef = useRef<(HTMLLIElement | null)[]>([]);
-  const dropdownAnnouncerRef = useRef<HTMLParagraphElement | null>(null);
+  const [announcement, setAnnouncement] = useState<string | null>(null);
+
+  // SETS THE FOCUS INDEX ON FIRST RENDER
+  useEffect(() => {
+    const initialIndex = options.findIndex((option) => option.value === value);
+    setFocusedIndex(initialIndex > -1 ? initialIndex : 0);
+  }, [options, value]);
+
+  // SETS SELECTED OPTION
+  useEffect(() => {
+    setSelectedOption(options.find((option) => option.value === value) || null);
+  }, [value, options]);
 
   // CLOSES THE DROPDOWN OPTIONS ON CLICK OUTSIDE
   useEffect(() => {
     const dropdown = dropdownRef.current;
     function handleClickOutside(event: MouseEvent) {
-      if (dropdown && !dropdown.contains(event.target as Node)) {
+      if (isOpen && dropdown && !dropdown.contains(event.target as Node)) {
         setIsOpen(false);
+        setAnnouncement(`${label} dropdown menu is now closed.`);
       }
     }
 
@@ -45,112 +55,79 @@ export default function DropdownMenu({
     return () => {
       document.removeEventListener('click', handleClickOutside);
     };
-  }, []);
-
-  // UPDATES THE SELECTED OPTION
-  useEffect(() => {
-    setSelectedOption(
-      value ? options.find((option) => option.value === value) || null : null
-    );
-  }, [value, options]);
-
-  // FOCUS ON THE FIRST OPTION WHEN THERE IS NO SELECTED OPTION
-  useEffect(() => {
-    if (isOpen && !selectedOption) {
-      setFocusedIndex(0);
-      optionsRef.current[0] && optionsRef.current[0].focus();
-    }
-  }, [isOpen, options.length, selectedOption]);
-
-  // FOCUS ON THE SELECTED OPTION WHEN THERE IS A SELECTED OPTION
-  useEffect(() => {
-    optionsRef.current[focusedIndex] &&
-      optionsRef.current[focusedIndex].focus();
-  }, [isOpen, options.length, focusedIndex]);
-
-  // ANNOUNCE TO SCREEN READERS WHEN THE DROPDOWN MENU IS OPENED OR CLOSED
-  useEffect(() => {
-    const announcer = dropdownAnnouncerRef.current;
-    if (announcer) {
-      announcer.textContent = isOpen
-        ? `${label} dropdown menu is now open.`
-        : `${label} dropdown menu is now closed.`;
-    }
   }, [isOpen, label]);
 
-  const toggleDropdown = () => setIsOpen(!isOpen);
+  const toggleDropdown = () => {
+    const prevIsOpen = isOpen;
+    setIsOpen(!prevIsOpen);
+    setAnnouncement(
+      `${label} dropdown menu is now ${prevIsOpen ? 'closed' : 'open'}.`
+    );
+  };
 
   function handleOptionClick(option: Option, index: number) {
     setSelectedOption(option);
     index >= 0 && setFocusedIndex(index);
-    onChange && onChange(option.value);
+    onChange(option.value);
+    dropdownRef.current?.focus();
   }
 
   function gotoNextOption(index: number) {
     const nextIndex = (index + 1) % options.length;
     setFocusedIndex(nextIndex);
-    optionsRef.current[nextIndex]?.focus();
-    if (options[nextIndex]) setSelectedOption(options[nextIndex]);
   }
 
   function gotoPreviousOption(index: number) {
     const prevIndex = (index - 1 + options.length) % options.length;
     setFocusedIndex(prevIndex);
-    optionsRef.current[prevIndex]?.focus();
-    if (options[prevIndex]) setSelectedOption(options[prevIndex]);
   }
 
   function handleDropdownKeyDown(e: React.KeyboardEvent<HTMLButtonElement>) {
-    switch (e.key) {
-      case 'Enter':
-      case ' ':
-        e.preventDefault();
-        setIsOpen((prevIsOpen) => !prevIsOpen);
-        break;
-      case 'Escape':
-        e.preventDefault();
-        setIsOpen(false);
-        break;
-      default:
-        break;
+    if (!isOpen && ['ArrowDown', 'ArrowUp', 'Enter', ' '].includes(e.key)) {
+      e.preventDefault();
+      setIsOpen(true);
+      setAnnouncement(`${label} dropdown menu is now open.`);
+      return;
     }
-  }
 
-  function handleOptionKeyDown(
-    e: React.KeyboardEvent<HTMLLIElement>,
-    index: number,
-    option: Option
-  ) {
     switch (e.key) {
+      case 'ArrowDown':
+        e.preventDefault();
+        gotoNextOption(focusedIndex);
+        break;
+      case 'ArrowUp':
+        e.preventDefault();
+        gotoPreviousOption(focusedIndex);
+        break;
       case 'Enter':
       case ' ':
+      case 'Tab':
+        if (!isOpen) return;
         e.preventDefault();
-        handleOptionClick(option, index);
+        handleOptionClick(options[focusedIndex], focusedIndex);
+        setIsOpen(false);
+        setAnnouncement(`${label} dropdown menu is now closed.`);
         break;
       case 'Escape':
-        e.preventDefault();
-        setIsOpen(false);
-        dropdownRef.current?.focus();
+        if (isOpen) {
+          setIsOpen(false);
+          setAnnouncement(`${label} dropdown menu is now closed.`);
+        }
         break;
-      case 'ArrowRight':
-      case 'ArrowDown': {
-        e.preventDefault();
-        gotoNextOption(index);
+      case 'Home':
+        isOpen && setFocusedIndex(0);
         break;
-      }
-      case 'ArrowLeft':
-      case 'ArrowUp': {
-        e.preventDefault();
-        gotoPreviousOption(index);
+      case 'End':
+        isOpen && setFocusedIndex(options.length - 1);
         break;
-      }
-      case 'Tab': {
-        e.preventDefault();
-        e.shiftKey ? gotoPreviousOption(index) : gotoNextOption(index);
-        break;
-      }
       default:
-        break;
+        if (isOpen && /^[a-z0-9]$/i.test(e.key)) {
+          const char = e.key.toLowerCase();
+          const foundIndex = options.findIndex((option) =>
+            option.label.toLowerCase().startsWith(char)
+          );
+          if (foundIndex > -1) setFocusedIndex(foundIndex);
+        }
     }
   }
 
@@ -159,29 +136,31 @@ export default function DropdownMenu({
       className={`dropdown flex-column ${className} ${disabled ? 'disabled' : ''}`}
       id={id}>
       <label
-        id={`${id}-label`}
+        htmlFor={`${id}-dropdown-trigger`}
         className='form-label'>
         {label}
       </label>
       <button
-        data-testid={`${id}-select`}
+        id={`${id}-dropdown-trigger`}
+        data-testid={`${id}-trigger`}
         type='button'
-        className='dropdown-select'
+        className='dropdown-trigger'
         ref={dropdownRef}
         onClick={toggleDropdown}
-        onKeyDown={handleDropdownKeyDown}
+        onKeyDown={(e) => handleDropdownKeyDown(e)}
         tabIndex={0}
         role='combobox'
         aria-expanded={isOpen}
         aria-haspopup='listbox'
         aria-controls={`${id}-options`}
-        aria-labelledby={`${id}-label`}
         aria-selected={!!selectedOption}
+        aria-activedescendant={isOpen ? options[focusedIndex].id : undefined}
         {...(disabled && { disabled: true })}>
         {selectedOption ? selectedOption.label : 'Choose an option'}
 
         <DropdownIcon
           className={`${isOpen ? 'rotate-180' : ''} dropdown-icon`}
+          aria-hidden='true'
         />
       </button>
       {isOpen && (
@@ -190,31 +169,42 @@ export default function DropdownMenu({
           id={`${id}-options`}
           role='listbox'
           data-testid={`${id}-options`}
-          aria-label={`${label} options`}>
-          {options.map((option, index) => (
-            <li
-              className='menu-item'
-              role='option'
-              tabIndex={-1}
-              key={option.value}
-              ref={(el) => {
-                optionsRef.current[index] = el;
-              }}
-              data-testid={option.id}
-              onClick={() => handleOptionClick(option, index)}
-              onKeyDown={(e) => handleOptionKeyDown(e, index, option)}
-              style={option.style}>
-              {option.label}
-            </li>
-          ))}
+          aria-labelledby={`${id}-label`}>
+          {options.map((option, index) => {
+            const isSelected = selectedOption?.value === option.value;
+            const isFocused = focusedIndex === index;
+            return (
+              <li
+                id={option.id}
+                className={`dropdown-option ${isFocused ? 'focused-option' : ''}`}
+                role='option'
+                key={option.value}
+                ref={(el) => {
+                  optionsRef.current[index] = el;
+                }}
+                data-testid={option.id}
+                onClick={() => handleOptionClick(option, index)}
+                style={option.style}
+                aria-selected={selectedOption?.value === option.value}>
+                {option.label}
+                {selectedOption?.value === option.value && (
+                  <CheckIcon
+                    height={16}
+                    fill={isSelected && isFocused ? '#FFF' : '#202122'}
+                  />
+                )}
+              </li>
+            );
+          })}
         </ul>
       )}
 
       <div
         className='sr-only'
-        ref={dropdownAnnouncerRef}
         aria-live='polite'
-        aria-atomic='true'></div>
+        aria-atomic='true'>
+        {announcement}
+      </div>
     </div>
   );
 }
