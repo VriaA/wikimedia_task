@@ -5,6 +5,14 @@
 	gap: 32px;
 }
 
+.editor-wrapper fieldset {
+	border-width: 0;
+}
+
+.editor-legend-label {
+	margin-bottom: 4px;
+}
+
 /* ============================== FORM ============================== */
 .customization-form {
 	gap: 32px;
@@ -16,20 +24,16 @@
 	display: grid;
 	grid-template-areas:
  'textarea textarea'
-		'link link-label'
 		'font-family color'
 		'font-size font-weight'
-		'line-height letter-spacing';
+		'line-height letter-spacing'
+		'dir link';
 	gap: 16px;
 	padding-top: 16px;
 }
 
 .typography-link {
 	grid-area: link;
-}
-
-.typography-link-label {
-	grid-area: link-label;
 }
 
 .typography-textarea {
@@ -42,6 +46,10 @@
 
 .typography-color {
 	grid-area: color;
+}
+
+.typography-dir {
+	grid-area: dir;
 }
 
 .typography-font-size {
@@ -101,7 +109,8 @@
 	grid-template-areas:
  'border border'
 		'border-color bg-color'
-		'image-uploader image-uploader';
+		'image-uploader image-uploader'
+		'alt-text alt-text';
 	gap: 16px;
 	width: 100%;
 	padding-top: 16px;
@@ -123,10 +132,25 @@
 	grid-area: image-uploader;
 }
 
+.appearance-image-alt-text {
+	grid-area: alt-text;
+}
+
 /* ===== VIEWPORT ===== */
 
 .viewport-inputs .radio-option {
 	padding-top: 16px;
+	width: 100%;
+}
+
+.editor-fieldset {
+	border-width: 0px;
+}
+
+.editor-fieldset-legend {
+	border-bottom: 1px solid #a2a9b1;
+	padding-bottom: 4px;
+	font: normal 2.2rem/3.2rem serif;
 	width: 100%;
 }
 
@@ -145,8 +169,8 @@
 		grid-template-columns: repeat( 4, 1fr );
 		grid-template-areas:
  'textarea textarea textarea textarea'
-			'link link link-label link-label'
 			'font-family font-family color color'
-			'font-size font-weight line-height letter-spacing';
+			'font-size font-weight line-height letter-spacing'
+			'dir dir link link';
 	}
 }

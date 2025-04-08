@@ -12,11 +12,10 @@ export default function useEditor(): UseEditor {
   // FINDS THE FONT OF THE SELECTED ELEMENT
   useEffect(() => {
     if (
-      selectedElement === 'heading' &&
-      elements.heading[currentViewport].fontFamily
+      selectedElement === 'text' &&
+      elements.text[currentViewport].fontFamily
     ) {
-      const fontName =
-        elements.heading[currentViewport].fontFamily.toLowerCase();
+      const fontName = elements.text[currentViewport].fontFamily.toLowerCase();
       setSelectedFont(fontName);
     }
   }, [selectedElement, elements, currentViewport]);
@@ -32,7 +31,7 @@ export default function useEditor(): UseEditor {
     : null;
 
   function handleTextChange(value: string) {
-    if (selectedElement === 'heading') {
+    if (selectedElement === 'text') {
       updateElementStyle(selectedElement, currentViewport, {
         textContent: value
       });
@@ -42,31 +41,30 @@ export default function useEditor(): UseEditor {
   function handleLinkChange(value: string) {
     if (selectedElement === 'banner') {
       updateElementStyle(selectedElement, currentViewport, {
-        bannerLink: value,
-        bannerLinkLabel: value ? selectedElementStyle?.bannerLinkLabel : ''
-      });
-    }
-  }
-
-  function handleLinkLabelChange(value: string) {
-    if (selectedElement === 'banner') {
-      updateElementStyle(selectedElement, currentViewport, {
-        bannerLinkLabel: value
+        bannerLink: value
       });
     }
   }
 
   function handleFontChange(fontValue: string) {
     setSelectedFont(fontValue);
-    if (selectedElement === 'heading') {
+    if (selectedElement === 'text') {
       updateElementStyle(selectedElement, currentViewport, {
         fontFamily: fontValue
       });
     }
   }
 
+  function handleDirChange(value: string) {
+    if (selectedElement === 'banner') {
+      updateElementStyle(selectedElement, currentViewport, {
+        dir: value
+      });
+    }
+  }
+
   function handleFontSizeChange(value: number) {
-    if (selectedElement === 'heading') {
+    if (selectedElement === 'text') {
       updateElementStyle(selectedElement, currentViewport, {
         fontSize: value
       });
@@ -74,7 +72,7 @@ export default function useEditor(): UseEditor {
   }
 
   function handleFontWeightChange(value: string) {
-    if (selectedElement === 'heading') {
+    if (selectedElement === 'text') {
       updateElementStyle(selectedElement, currentViewport, {
         fontWeight: value
       });
@@ -82,7 +80,7 @@ export default function useEditor(): UseEditor {
   }
 
   function handleLineHeightChange(value: number) {
-    if (selectedElement === 'heading') {
+    if (selectedElement === 'text') {
       updateElementStyle(selectedElement, currentViewport, {
         lineHeight: value
       });
@@ -90,7 +88,7 @@ export default function useEditor(): UseEditor {
   }
 
   function handleLetterSpacingChange(value: number) {
-    if (selectedElement === 'heading') {
+    if (selectedElement === 'text') {
       updateElementStyle(selectedElement, currentViewport, {
         letterSpacing: value
       });
@@ -142,7 +140,7 @@ export default function useEditor(): UseEditor {
   }
 
   function handleColorChange(color: string) {
-    if (selectedElement === 'heading') {
+    if (selectedElement === 'text') {
       updateElementStyle(selectedElement, currentViewport, { color });
     }
   }
@@ -195,6 +193,14 @@ export default function useEditor(): UseEditor {
     reader.readAsDataURL(file);
   }
 
+  function handleAltTextChange(value: string) {
+    if (selectedElement === 'image') {
+      updateElementStyle(selectedElement, currentViewport, {
+        imgAlt: value
+      });
+    }
+  }
+
   return {
     selectedElementStyle,
     handleBorderChange,
@@ -204,6 +210,7 @@ export default function useEditor(): UseEditor {
     handleImageChange,
     handleColorChange,
     handleFontChange,
+    handleDirChange,
     handleFontSizeChange,
     handleFontWeightChange,
     handleHeightChange,
@@ -214,7 +221,7 @@ export default function useEditor(): UseEditor {
     handleTextChange,
     handleWidthChange,
     handleLinkChange,
-    handleLinkLabelChange,
+    handleAltTextChange,
     selectedElement
   };
 }

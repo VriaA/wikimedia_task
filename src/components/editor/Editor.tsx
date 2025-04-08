@@ -10,6 +10,7 @@ import TextInput from './TextInput';
 import RadioGroup from '../RadioGroup';
 import SectionHeading from '../SectionHeader';
 import fontFamily from '../../constants/fontFamily';
+import dir from '../../constants/direction';
 import useEditor from '../../hooks/useEditor';
 import './styles/Editor.css';
 
@@ -23,6 +24,7 @@ export default function Editor() {
     handleImageChange,
     handleColorChange,
     handleFontChange,
+    handleDirChange,
     handleFontSizeChange,
     handleFontWeightChange,
     handleHeightChange,
@@ -33,7 +35,7 @@ export default function Editor() {
     handleTextChange,
     handleWidthChange,
     handleLinkChange,
-    handleLinkLabelChange,
+    handleAltTextChange,
     selectedElement
   } = useEditor();
 
@@ -45,19 +47,9 @@ export default function Editor() {
   const canDisablePositionAndPaddingInputs =
     selectedElement === 'banner' || selectedElement === 'image';
 
-  function handleViewportChange(event: React.FormEvent<HTMLInputElement>) {
-    const target = event.target as HTMLInputElement;
+  function handleViewportChange(event: React.ChangeEvent<HTMLInputElement>) {
+    const target = event.target;
     setCurrentViewport(target.value as ViewportType);
-  }
-
-  function getBannerLinkLabel(
-    link: string | undefined,
-    label: string | undefined
-  ) {
-    if (link) {
-      return label ? label : `Visit ${link}`;
-    }
-    return '';
   }
 
   return (
@@ -65,25 +57,20 @@ export default function Editor() {
       id='editor'
       className='editor-wrapper flex-column'
       data-testid='editor'>
-      <SectionHeading
-        text='Customization Form'
-        type='main'
-        subtext={
-          selectedElement
-            ? `Editing ${selectedElement} element`
-            : 'Select an element on the banner to edit its properties'
-        }
-      />
-
       <form className='customization-form flex-column'>
-        <section className='viewport-section'>
-          <SectionHeading
-            text='Device viewport'
-            type='form'
-          />
+        <SectionHeading
+          text='Customization Form'
+          subtext={
+            selectedElement
+              ? `Editing ${selectedElement} element`
+              : 'Select an element on the banner to edit its properties'
+          }
+        />
+        <fieldset className='editor-fieldset viewport-section'>
+          <legend className='editor-fieldset-legend'>Device viewport</legend>
+
           <div className='viewport-inputs'>
             <RadioGroup
-              heading=''
               name='deviceViewport'
               options={[
                 { id: 'viewport-mobile', label: 'Mobile', value: 'mobile' },
@@ -94,13 +81,10 @@ export default function Editor() {
               onChange={handleViewportChange}
             />
           </div>
-        </section>
+        </fieldset>
 
-        <section className='typography-section'>
-          <SectionHeading
-            text='Typography'
-            type='form'
-          />
+        <fieldset className='editor-fieldset typography-section'>
+          <legend className='editor-fieldset-legend'>Typography</legend>
           <div className='typography-inputs'>
             <TextArea
               id='banner-text-field'
@@ -108,28 +92,7 @@ export default function Editor() {
               value={selectedElementStyle?.textContent || ''}
               onChange={handleTextChange}
               className='typography-textarea transition-opacity-300-ease'
-              disabled={!selectedElement || selectedElement !== 'heading'}
-            />
-
-            <TextInput
-              id='banner-link-field'
-              label='Banner Link'
-              value={selectedElementStyle?.bannerLink || ''}
-              onChange={handleLinkChange}
-              className='typography-link transition-opacity-300-ease'
-              disabled={!selectedElement || selectedElement !== 'banner'}
-            />
-
-            <TextInput
-              id='banner-link-aria-label'
-              label='Banner Link Aria Label'
-              value={getBannerLinkLabel(
-                selectedElementStyle?.bannerLink,
-                selectedElementStyle?.bannerLinkLabel
-              )}
-              onChange={handleLinkLabelChange}
-              className='typography-link-label transition-opacity-300-ease'
-              disabled={!selectedElement || selectedElement !== 'banner'}
+              disabled={!selectedElement || selectedElement !== 'text'}
             />
 
             <DropdownMenu
@@ -139,7 +102,7 @@ export default function Editor() {
               value={selectedElementStyle?.fontFamily || ''}
               onChange={handleFontChange}
               className='typography-font-family transition-opacity-300-ease'
-              disabled={!selectedElement || selectedElement !== 'heading'}
+              disabled={!selectedElement || selectedElement !== 'text'}
             />
 
             <ColorPicker
@@ -147,7 +110,7 @@ export default function Editor() {
               elementColor={selectedElementStyle?.color || '#000'}
               onChange={handleColorChange}
               className='typography-color transition-opacity-300-ease'
-              disabled={!selectedElement || selectedElement !== 'heading'}
+              disabled={!selectedElement || selectedElement !== 'text'}
               id='text-color-picker'
             />
 
@@ -159,7 +122,7 @@ export default function Editor() {
               value={selectedElementStyle?.fontSize}
               onChange={handleFontSizeChange}
               className='typography-font-size transition-opacity-300-ease'
-              disabled={!selectedElement || selectedElement !== 'heading'}
+              disabled={!selectedElement || selectedElement !== 'text'}
             />
 
             <DropdownMenu
@@ -169,18 +132,18 @@ export default function Editor() {
               options={fontWeightsToRender}
               onChange={handleFontWeightChange}
               className='typography-font-weight transition-opacity-300-ease'
-              disabled={!selectedElement || selectedElement !== 'heading'}
+              disabled={!selectedElement || selectedElement !== 'text'}
             />
 
             <NumberInput
               id='line-height-field'
               min={0}
               label='Line height'
-              value={selectedElementStyle?.lineHeight || 1.5}
+              value={selectedElementStyle?.lineHeight}
               onChange={handleLineHeightChange}
               className='typography-line-height transition-opacity-300-ease'
               step={0.1}
-              disabled={!selectedElement || selectedElement !== 'heading'}
+              disabled={!selectedElement || selectedElement !== 'text'}
             />
 
             <NumberInput
@@ -191,16 +154,36 @@ export default function Editor() {
               value={selectedElementStyle?.letterSpacing}
               onChange={handleLetterSpacingChange}
               className='typography-letter-spacing transition-opacity-300-ease'
-              disabled={!selectedElement || selectedElement !== 'heading'}
+              disabled={!selectedElement || selectedElement !== 'text'}
+              canHaveNegativeValue={true}
             />
-          </div>
-        </section>
 
-        <section className='layout-section'>
-          <SectionHeading
-            text='Layout'
-            type='form'
-          />
+            {selectedElement === 'banner' && (
+              <>
+                <DropdownMenu
+                  id='dir-dropdown'
+                  label='Text Direction'
+                  options={dir}
+                  value={selectedElementStyle?.dir || ''}
+                  onChange={handleDirChange}
+                  className='typography-dir transition-opacity-300-ease'
+                  disabled={!selectedElement || selectedElement !== 'banner'}
+                />
+                <TextInput
+                  id='banner-link-field'
+                  label='Banner Link'
+                  value={selectedElementStyle?.bannerLink || ''}
+                  onChange={handleLinkChange}
+                  className='typography-link transition-opacity-300-ease'
+                  disabled={!selectedElement || selectedElement !== 'banner'}
+                />
+              </>
+            )}
+          </div>
+        </fieldset>
+
+        <fieldset className='editor-fieldset layout-section'>
+          <legend className='editor-fieldset-legend'>Layout</legend>
           <div className='layout-inputs'>
             <NumberInput
               id='width-field'
@@ -222,11 +205,12 @@ export default function Editor() {
               disabled={!selectedElement}
               className='transition-opacity-300-ease'
             />
-            <div className='layout-padding form-input-wrapper'>
-              <label
-                className={`form-label ${!selectedElement || canShowImageUploader ? 'disabled' : ''} transition-opacity-300-ease`}>
+
+            <fieldset className='layout-padding'>
+              <legend
+                className={`form-label editor-legend-label  ${!selectedElement || canShowImageUploader ? 'disabled' : ''} transition-opacity-300-ease`}>
                 Padding
-              </label>
+              </legend>
               <div className='layout-padding-inputs'>
                 <NumberInput
                   id='padding-right-field'
@@ -280,13 +264,13 @@ export default function Editor() {
                   className='transition-opacity-300-ease'
                 />
               </div>
-            </div>
+            </fieldset>
 
-            <div className='layout-position form-input-wrapper'>
-              <label
-                className={`form-label ${!selectedElement || selectedElement === 'banner' ? 'disabled' : ''} transition-opacity-300-ease`}>
+            <fieldset className='layout-position'>
+              <legend
+                className={`form-label editor-legend-label ${!selectedElement || selectedElement === 'banner' ? 'disabled' : ''} transition-opacity-300-ease`}>
                 Position
-              </label>
+              </legend>
               <div className='layout-position-inputs'>
                 <NumberInput
                   id='position-left-field'
@@ -310,22 +294,19 @@ export default function Editor() {
                   canHaveNegativeValue={true}
                 />
               </div>
-            </div>
+            </fieldset>
           </div>
-        </section>
+        </fieldset>
 
-        <section className='appearance-section'>
-          <SectionHeading
-            text='Appearance'
-            type='form'
-          />
-
+        <fieldset className='editor-fieldset appearance-section'>
+          <legend className='editor-fieldset-legend'>Appearance</legend>
           <div className='appearance-inputs'>
-            <div className='appearance-border form-input-wrapper'>
-              <label
-                className={`form-label ${!selectedElement ? 'disabled' : ''} transition-opacity-300-ease`}>
+            <fieldset className='appearance-border'>
+              <legend
+                className={`form-label editor-legend-label ${!selectedElement ? 'disabled' : ''} transition-opacity-300-ease`}>
                 Border
-              </label>
+              </legend>
+
               <div className='appearance-border-inputs'>
                 <NumberInput
                   id='border-right-field'
@@ -371,7 +352,7 @@ export default function Editor() {
                   className='transition-opacity-300-ease'
                 />
               </div>
-            </div>
+            </fieldset>
 
             <ColorPicker
               label='Border Color'
@@ -403,8 +384,20 @@ export default function Editor() {
                 className='appearance-image-uploader transition-opacity-300-ease'
               />
             )}
+
+            {selectedElement === 'image' && (
+              <TextInput
+                id='image-alt-text'
+                label='Image Alt Text (Leave blank for decorative images)'
+                placeholder='Describe the image for accessibility'
+                value={selectedElementStyle?.imgAlt || ''}
+                onChange={handleAltTextChange}
+                disabled={!selectedElement || selectedElement !== 'image'}
+                className='appearance-image-alt-text transition-opacity-300-ease'
+              />
+            )}
           </div>
-        </section>
+        </fieldset>
       </form>
     </div>
   );

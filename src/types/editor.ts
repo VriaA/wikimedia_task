@@ -12,7 +12,8 @@ export type UseEditor = {
   fontWeightsToRender: Option[];
   handleTextChange: (value: string) => void;
   handleLinkChange: (value: string) => void;
-  handleLinkLabelChange: (value: string) => void;
+  handleAltTextChange: (value: string) => void;
+  handleDirChange: (value: string) => void;
   handleFontChange: (value: string) => void;
   handleFontSizeChange: (value: number) => void;
   handleFontWeightChange: (value: string) => void;
