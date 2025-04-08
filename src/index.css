@@ -91,6 +91,12 @@ input[ type='number' ]::-webkit-outer-spin-button {
 	margin: 0;
 }
 
+button:disabled,
+input:disabled,
+textarea:disabled {
+	cursor: not-allowed;
+}
+
 /* ============================== UTILITY CLASSES ==============================  */
 .flex-center {
 	display: flex;
