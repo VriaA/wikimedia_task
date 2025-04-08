@@ -24,23 +24,19 @@ export default function TextArea({
     onChange(e.target.value);
 
   return (
-    <div
-      className={`text-area-container ${className} ${disabled ? 'disabled' : ''}`}
-      data-testid={id}>
-      <label
-        htmlFor={`${id}-input`}
-        className='form-label'>
-        {label}
-        <textarea
-          id={`${id}-input`}
-          className={`text-area-input ${className}`}
-          value={value}
-          onChange={handleChange}
-          placeholder={placeholder}
-          data-testid={`${id}-input`}
-          {...(disabled && { disabled: true })}
-        />
-      </label>
-    </div>
+    <label
+      htmlFor={`${id}-input`}
+      className={`text-area-container form-label ${className} ${disabled ? 'disabled' : ''}`}>
+      {label}
+      <textarea
+        id={`${id}-input`}
+        className={`text-area-input ${className}`}
+        value={value}
+        onChange={handleChange}
+        placeholder={placeholder}
+        data-testid={`${id}-input`}
+        {...(disabled && { disabled: true })}
+      />
+    </label>
   );
 }
