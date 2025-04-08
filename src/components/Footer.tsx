@@ -9,8 +9,10 @@ export default function Footer() {
         <a
           aria-label="Oyelola Victoria's Wikimedia Task GitHub repository link."
           href='https://github.com/VriaA/wikimedia_task'
-          target='_blank'>
+          target='_blank'
+          rel='noopener noreferrer'>
           <GitHubLogo
+            aria-hidden='true'
             width={32}
             height={32}
           />
