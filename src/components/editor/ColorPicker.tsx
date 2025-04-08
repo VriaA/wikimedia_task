@@ -2,13 +2,14 @@ import React, { useEffect, useState, useRef } from 'react';
 import { ChromePicker } from 'react-color';
 import type { ColorResult } from 'react-color';
 import './styles/ColorPicker.css';
+import FocusLock from 'react-focus-lock';
 
 type ColorPickerProps = {
   elementColor?: string;
   onChange: (color: string) => void;
   label: string;
   className?: string;
-  disabled: boolean;
+  disabled?: boolean;
   id: string;
 };
 
@@ -20,63 +21,106 @@ export default function ColorPicker({
   disabled,
   id
 }: ColorPickerProps) {
-  const [color, setColor] = useState(elementColor);
   const [isColorPickerOpen, setIsColorPickerOpen] = useState(false);
   const pickerRef = useRef<HTMLDivElement>(null);
+  const triggerRef = useRef<HTMLButtonElement>(null);
 
-  const handleClick = () =>
+  const toggleColorPicker = () =>
     setIsColorPickerOpen((prevIsColorPickerOpen) => !prevIsColorPickerOpen);
 
-  useEffect(() => {
-    setColor(elementColor);
-  }, [elementColor]);
-
+  // CLOSES COLOR PICKER ON CLICK OUTSIDE
   useEffect(() => {
     function handleClose(e: MouseEvent) {
-      if (pickerRef.current && !pickerRef.current.contains(e.target as Node)) {
+      if (
+        isColorPickerOpen &&
+        pickerRef.current &&
+        !pickerRef.current.contains(e.target as Node)
+      ) {
         setIsColorPickerOpen(false);
       }
     }
     document.addEventListener('click', handleClose);
     return () => document.removeEventListener('click', handleClose);
-  }, []);
+  }, [isColorPickerOpen]);
+
+  // FOCUSES ON THE COLOR INPUT WHEN THE COLOR PICKER IS OPENED
+  useEffect(() => {
+    if (!isColorPickerOpen) return;
+    const colorInput = document.querySelector(
+      'input[id^="rc-editable-input-"]'
+    ) as HTMLInputElement;
+    colorInput.focus();
+  }, [isColorPickerOpen]);
 
   function handleChange(newColor: ColorResult) {
     const hexColor = newColor.hex.toUpperCase();
     onChange(hexColor);
   }
 
+  function closeOnKeyPress(e: React.KeyboardEvent) {
+    if (e.key !== 'Escape') return;
+    e.preventDefault();
+    setIsColorPickerOpen(false);
+  }
+
   return (
     <div
-      className={`form-input-wrapper ${className} ${disabled ? 'disabled' : ''}`}
+      aria-modal='true'
+      className={`color-picker-wrapper form-input-wrapper ${className} ${disabled ? 'disabled' : ''}`}
       ref={pickerRef}>
-      <label className='form-label'>{label}</label>
-      <button
-        type='button'
-        className='color-input-container'
-        onClick={handleClick}
-        data-testid={id}
-        {...(disabled && { disabled: true })}>
-        <div
-          className='color-swatch'
-          style={{ backgroundColor: color }}
-        />
-        <div className='color-hex-value'>{color}</div>
-        {isColorPickerOpen ? (
-          <>
+      <label
+        className='form-label'
+        htmlFor={`${id}-picker-trigger`}>
+        {label}
+      </label>
+
+      <div className='color-picker'>
+        <button
+          ref={triggerRef}
+          id={`${id}-trigger`}
+          data-testid={`${id}-trigger`}
+          type='button'
+          className='color-picker-trigger'
+          onClick={toggleColorPicker}
+          aria-haspopup='true'
+          aria-expanded={isColorPickerOpen}
+          aria-controls={`${id}-popover`}
+          aria-label={`${isColorPickerOpen ? 'Close' : 'Open'} ${id}`}
+          {...(disabled && { disabled: true })}>
+          <div
+            className='color-swatch'
+            style={{ backgroundColor: elementColor }}
+          />
+          <div className='color-hex-value'>{elementColor}</div>
+        </button>
+
+        {isColorPickerOpen && (
+          <FocusLock
+            returnFocus={true}
+            onDeactivation={() => triggerRef.current?.focus()}>
             <div
+              id={`${id}-popover`}
               className='color-picker-popover'
               data-testid={`${id}-popover`}
-              onClick={(e) => e.stopPropagation()}>
+              onClick={(e) => e.stopPropagation()}
+              onKeyDown={closeOnKeyPress}
+              role='dialog'
+              aria-modal='true'
+              aria-labelledby={`${id}-dialog-title`}>
+              <h2
+                id={`${id}-dialog-title`}
+                className='sr-only'>
+                {label} Picker
+              </h2>
               <ChromePicker
-                color={color}
+                color={elementColor}
                 onChange={handleChange}
                 disableAlpha={true}
               />
             </div>
-          </>
-        ) : null}
-      </button>
+          </FocusLock>
+        )}
+      </div>
     </div>
   );
 }
