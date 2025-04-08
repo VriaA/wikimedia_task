@@ -2,7 +2,7 @@ import React, { useState, useRef } from 'react';
 import './styles/ImageUploader.css';
 
 type ImageUploaderProps = {
-  onImageUpload?: (file: File) => void;
+  onImageUpload: (file: File) => void;
   maxSizeKB?: number;
   label: string;
   className?: string;
@@ -13,7 +13,7 @@ export default function ImageUploader({
   onImageUpload,
   label,
   maxSizeKB = 250,
-  className,
+  className = '',
   id
 }: ImageUploaderProps) {
   const [isDragging, setIsDragging] = useState(false);
@@ -65,7 +65,7 @@ export default function ImageUploader({
       return;
     }
 
-    onImageUpload && onImageUpload(file);
+    onImageUpload(file);
   }
 
   const handleBrowseClick = () => fileInputRef.current?.click();
