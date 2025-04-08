@@ -73,8 +73,15 @@ export default function ImageUploader({
   return (
     <div
       className={`form-input-wrapper ${className}`}
-      data-testid={id}>
-      <label className='form-label'>{label}</label>
+      data-testid={id}
+      role='group'
+      aria-labelledby={`${id}-label`}>
+      <label
+        id={`${id}-label`}
+        className='form-label'
+        htmlFor={`${id}-input`}>
+        {label}
+      </label>
       <div
         data-testid={`${id}-drop-zone`}
         className={`image-uploader-dropzone ${isDragging ? 'dragging' : ''}`}
@@ -88,7 +95,8 @@ export default function ImageUploader({
             <button
               type='button'
               className='browse-btn'
-              onClick={handleBrowseClick}>
+              onClick={handleBrowseClick}
+              aria-label='Browse for images to upload'>
               Browse
             </button>
           </div>
@@ -96,12 +104,14 @@ export default function ImageUploader({
             Max file size: {maxSizeKB} KB
           </p>
           <input
+            id={`${id}-input`}
             data-testid={`${id}-input`}
             type='file'
             ref={fileInputRef}
             className='file-input'
             accept='image/*'
             onChange={handleFileInputChange}
+            aria-labelledby={`${id}-label`}
           />
         </div>
       </div>
