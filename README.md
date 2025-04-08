@@ -18,7 +18,8 @@ The Banner Creator Tool is a web application that enables users to create and cu
 - **React Color**: For color pickers.
 - **Jest & React Testing Library:** For testing.
 - **CSS**: For styling the application.
-- **Color Contrast Checker**: Ensures color accessibility compliance.
+- **tinyColor2**: Used to ensures text remains readable against background colors (meets WCAG AA standards).
+- **react-focus-lock**: Ensures keyboard focus remains trapped within modals for better accessibility compliance.
 - **ESLint, Stylelint & Prettier**: For maintaining code consistency and quality.
 - **Vite + SWC**: For a fast and efficient development environment.
 - **vite-plugin-svgr:** Converts SVGs into React components for easy use.
@@ -77,11 +78,15 @@ e.g.,
 npm run test tests/Editor.tsx
 ```
 
-All test suites:
-
 ```
 ├── tests/
-│   ├── Editor.tsx
+│   ├── editor/
+│   │   ├── Appearance.test.tsx
+│   │   ├── ElementSelection.test.tsx
+│   │   ├── Layout.test.tsx
+│   │   ├── Rendering.test.tsx
+│   │   ├── Typography.test.tsx
+│   │   └── Viewport.test.tsx
 │   ├── ImageUploader.tsx
 │   ├── ColorPicker.tsx
 │   └── DropDownMenu.tsx
@@ -90,6 +95,7 @@ All test suites:
 ## Linting
 
 Uses Stylelint to adhere to CSS coding conventions for Wikimedia, ESLint for syntax and best practices, and Prettier for keeping the codebase clean and maintainable.
+
 -> To check for linting errors and maintain code consistency, run:
 
 ```
