@@ -1,19 +1,18 @@
 import React, { useContext } from 'react';
-import { Fragment } from 'react/jsx-runtime';
 import { appContext } from '../contexts/context';
 import type { AppContext } from '../contexts/context';
 import MainMenuIcon from '../assets/header_main_menu.svg?react';
 import SearchIcon from '../assets/search_icon.svg?react';
 import PersonalToolsIcon from '../assets/personal_tools_icon.svg?react';
-
 import './styles/AppHeader.css';
 
 export default function AppHeader() {
   const { mode } = useContext(appContext) as AppContext;
+
   return (
     <header className='app-header flex-center-y'>
       {mode === 'preview' ? (
-        <Fragment>
+        <>
           <button
             type='button'
             className='main-menu-btn'
@@ -25,9 +24,11 @@ export default function AppHeader() {
             <a href='/'>Banner Creator</a>
           </h1>
 
-          <form className='search-form flex-center-y'>
+          <form
+            className='search-form flex-center-y'
+            onSubmit={(e) => e.preventDefault()}>
             <div className='search-input-wrapper flex-center-y'>
-              <SearchIcon />
+              <SearchIcon aria-hidden='true' />
               <input
                 type='text'
                 className='search-input'
@@ -35,7 +36,7 @@ export default function AppHeader() {
               />
             </div>
             <button
-              type='button'
+              type='submit'
               className='search-button desktop-only'>
               Search
             </button>
@@ -77,12 +78,16 @@ export default function AppHeader() {
               type='button'
               className='personal-tools'
               aria-label='Personal Tools'>
-              <PersonalToolsIcon />
+              <PersonalToolsIcon aria-hidden='true' />
             </button>
           </nav>
-        </Fragment>
+        </>
       ) : (
-        <h1 className='main-heading editor-heading'>Click Banner to Edit</h1>
+        <h1
+          className='main-heading editor-heading'
+          id='edit-mode-heading'>
+          Click Banner to Edit
+        </h1>
       )}
     </header>
   );
