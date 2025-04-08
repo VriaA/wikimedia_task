@@ -30,6 +30,7 @@ export default function AppHeader() {
             <div className='search-input-wrapper flex-center-y'>
               <SearchIcon aria-hidden='true' />
               <input
+                name='search'
                 type='text'
                 className='search-input'
                 placeholder='Search'
