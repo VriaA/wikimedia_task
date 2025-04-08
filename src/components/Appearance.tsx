@@ -1,5 +1,5 @@
 import React from 'react';
-import { FormEvent, useContext, useState } from 'react';
+import { useContext, useState } from 'react';
 import { appContext } from '../contexts/context';
 import RadioGroup from './RadioGroup';
 import './styles/Content.css';
@@ -13,8 +13,8 @@ export default function Appearance() {
     return null;
   }
 
-  function updateAppearance(event: FormEvent) {
-    const target = event.target as HTMLFormElement;
+  function updateAppearance(event: React.ChangeEvent<HTMLInputElement>) {
+    const target = event.target;
     const name = target.name;
     const value = target.value;
 
