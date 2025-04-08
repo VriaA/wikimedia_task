@@ -65,12 +65,11 @@ export default function ColorPicker({
 
   return (
     <div
-      aria-modal='true'
       className={`color-picker-wrapper form-input-wrapper ${className} ${disabled ? 'disabled' : ''}`}
       ref={pickerRef}>
       <label
         className='form-label'
-        htmlFor={`${id}-picker-trigger`}>
+        htmlFor={`${id}-trigger`}>
         {label}
       </label>
 
