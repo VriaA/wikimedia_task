@@ -1,10 +1,10 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import './styles/TextInput.css';
 
 type TextInputProps = {
   label: string;
   placeholder?: string;
-  onChange?: (value: string) => void;
+  onChange: (value: string) => void;
   value?: string;
   className?: string;
   disabled: boolean;
@@ -20,31 +20,25 @@ export default function TextInput({
   disabled,
   id
 }: TextInputProps) {
-  const [textValue, setTextValue] = useState('');
-
-  useEffect(() => {
-    setTextValue(value ? value : '');
-  }, [value]);
-
-  function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
-    setTextValue(e.target.value);
-    if (onChange) {
-      onChange(e.target.value);
-    }
-  }
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) =>
+    onChange(e.target.value);
 
   return (
     <div
-      className={`form-input-wrapper ${className} ${disabled ? 'disabled' : ''}`}
-      data-testid={id}>
-      <label className='form-label'>{label}</label>
+      className={`form-input-wrapper ${className} ${disabled ? 'disabled' : ''}`}>
+      <label
+        className='form-label'
+        htmlFor={`${id}-input`}>
+        {label}
+      </label>
       <input
+        id={`${id}-input`}
+        data-testid={`${id}-input`}
         type='text'
         className={`text-input ${className}`}
-        value={textValue}
+        value={value}
         onChange={handleChange}
         placeholder={placeholder}
-        data-testid={`${id}-input`}
         {...(disabled && { disabled: true })}
       />
     </div>
