@@ -10,7 +10,7 @@
 }
 
 .number-input-wrapper:focus-within {
-	outline: 1px solid #36c;
+	outline: 2px solid #36c;
 }
 
 .number-input {
