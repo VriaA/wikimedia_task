@@ -217,14 +217,14 @@ export default function useBanner(
     [mode, setSelectedElement, selectedElement, selectElement]
   );
 
-  const handleCloseBtnClick = useCallback(() => {
+  const handleDeselectButtonClick = useCallback(() => {
     setSelectedElement(null);
     bannerRef?.current && bannerRef?.current.focus();
   }, [bannerRef, setSelectedElement]);
 
   return useMemo(
     () => ({
-      handleCloseBtnClick,
+      handleDeselectButtonClick,
       canShowContrastMessage,
       setCanShowContrastMessage,
       selectedElement,
@@ -247,7 +247,7 @@ export default function useBanner(
       bannerStyles,
       canShowContrastMessage,
       handleBannerClick,
-      handleCloseBtnClick,
+      handleDeselectButtonClick,
       handleKeyDown,
       imageStyle,
       imageStyles,

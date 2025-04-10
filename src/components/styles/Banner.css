@@ -117,14 +117,15 @@
 /* ===== DESELECT BUTTON ===== */
 .deselect-btn {
 	position: fixed;
+	inset: 0;
+	margin: auto auto 8px auto;
 	padding: 12px;
 	border-radius: 50%;
 	width: fit-content;
 	height: fit-content;
-	inset: 0;
-	margin: auto auto 8px auto;
 	background-color: #f8f9fa;
 	border: 1px solid #a2a9b1;
+	z-index: 9999;
 }
 
 .deselect-btn:hover {

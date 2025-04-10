@@ -75,7 +75,7 @@ export type BannerPosition =
   | { position?: undefined; top?: undefined };
 
 export type UseBanner = {
-  handleCloseBtnClick: () => void;
+  handleDeselectButtonClick: () => void;
   canShowContrastMessage: boolean;
   setCanShowContrastMessage: React.Dispatch<React.SetStateAction<boolean>>;
   selectedElement: BannerElementType;
