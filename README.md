@@ -18,7 +18,7 @@ The Banner Creator Tool is a web application that enables users to create and cu
 - **React Color**: For color pickers.
 - **Jest & React Testing Library:** For testing.
 - **CSS**: For styling the application.
-- **tinyColor2**: Used to ensures text remains readable against background colors (meets WCAG AA standards).
+- **tinyColor2**: To ensure text remains readable against background colors (meets WCAG AA standards).
 - **react-focus-lock**: Ensures keyboard focus remains trapped within modals for better accessibility compliance.
 - **ESLint, Stylelint & Prettier**: For maintaining code consistency and quality.
 - **Vite + SWC**: For a fast and efficient development environment.
