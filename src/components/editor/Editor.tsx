@@ -1,6 +1,4 @@
-import React, { useContext } from 'react';
-import { bannerContext } from '../../contexts/context';
-import type { BannerContext, ViewportType } from '../../types/banner';
+import React from 'react';
 import ColorPicker from './ColorPicker';
 import ImageUploader from './ImageUploader';
 import NumberInput from './NumberInput';
@@ -16,6 +14,8 @@ import './styles/Editor.css';
 
 export default function Editor() {
   const {
+    currentViewport,
+    handleViewportChange,
     selectedElementStyle,
     handleBorderChange,
     fontWeightsToRender,
@@ -39,18 +39,10 @@ export default function Editor() {
     selectedElement
   } = useEditor();
 
-  const { currentViewport, setCurrentViewport } = useContext(
-    bannerContext
-  ) as BannerContext;
   const canShowImageUploader =
     selectedElement === 'banner' || selectedElement === 'image';
   const canDisablePositionAndPaddingInputs =
     selectedElement === 'banner' || selectedElement === 'image';
-
-  function handleViewportChange(event: React.ChangeEvent<HTMLInputElement>) {
-    const target = event.target;
-    setCurrentViewport(target.value as ViewportType);
-  }
 
   return (
     <div

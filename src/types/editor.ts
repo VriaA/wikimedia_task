@@ -1,4 +1,8 @@
-import type { BannerElementStyle, BannerElementType } from '../types/banner';
+import type {
+  BannerElementStyle,
+  BannerElementType,
+  ViewportType
+} from '../types/banner';
 
 export type Option = {
   id: string;
@@ -10,6 +14,8 @@ export type Option = {
 export type UseEditor = {
   selectedElementStyle: BannerElementStyle | null;
   fontWeightsToRender: Option[];
+  currentViewport: ViewportType;
+  handleViewportChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
   handleTextChange: (value: string) => void;
   handleLinkChange: (value: string) => void;
   handleAltTextChange: (value: string) => void;
