@@ -11,6 +11,11 @@ const options = [
 ];
 
 describe('DropdownMenu', () => {
+  let onChangeMock = jest.mock;
+  beforeEach(() => {
+    onChangeMock = jest.fn();
+  });
+
   it('renders the dropdown with default text when there is no default option', () => {
     render(
       <DropdownMenu
@@ -18,7 +23,7 @@ describe('DropdownMenu', () => {
         label='Test Dropdown'
         options={options}
         disabled={false}
-        onChange={() => ''}
+        onChange={onChangeMock}
       />
     );
 
@@ -35,7 +40,7 @@ describe('DropdownMenu', () => {
         label='Test Dropdown'
         options={options}
         disabled={false}
-        onChange={() => ''}
+        onChange={onChangeMock}
         value='three'
       />
     );
@@ -52,7 +57,7 @@ describe('DropdownMenu', () => {
         label='Test Dropdown'
         options={options}
         disabled={false}
-        onChange={() => ''}
+        onChange={onChangeMock}
       />
     );
 
@@ -69,7 +74,8 @@ describe('DropdownMenu', () => {
         label='Test Dropdown'
         options={options}
         disabled={false}
-        onChange={() => ''}
+        onChange={onChangeMock}
+        value='three'
       />
     );
 
@@ -79,7 +85,7 @@ describe('DropdownMenu', () => {
     const option = screen.getByTestId('option-2');
     await userEvent.click(option);
 
-    expect(dropdownButton).toHaveTextContent('Option Two');
+    expect(onChangeMock).toHaveBeenCalledWith('two');
   });
 
   it('closes the dropdown when clicking outside', async () => {
@@ -89,7 +95,7 @@ describe('DropdownMenu', () => {
         label='Test Dropdown'
         options={options}
         disabled={false}
-        onChange={() => ''}
+        onChange={onChangeMock}
       />
     );
 
@@ -111,7 +117,7 @@ describe('DropdownMenu', () => {
         label='Test Dropdown'
         options={options}
         disabled={false}
-        onChange={() => ''}
+        onChange={onChangeMock}
       />
     );
 
@@ -128,7 +134,7 @@ describe('DropdownMenu', () => {
         label='Test Dropdown'
         options={options}
         disabled={false}
-        onChange={() => ''}
+        onChange={onChangeMock}
         value='two'
       />
     );
@@ -139,13 +145,16 @@ describe('DropdownMenu', () => {
   });
 
   it('handles keyboard navigation', async () => {
+    // Simulates full keyboard navigation cycle in order:
+    // ArrowDown → ArrowUp → ArrowLeft → End → Home → Tab → Enter → Space
+
     render(
       <DropdownMenu
         id='test-dropdown'
         label='Test Dropdown'
         options={options}
         disabled={false}
-        onChange={() => ''}
+        onChange={onChangeMock}
       />
     );
 
@@ -169,9 +178,7 @@ describe('DropdownMenu', () => {
     expect(screen.getByTestId('option-1')).toHaveClass('focused-option');
 
     await userEvent.keyboard('{Tab}');
-    expect(screen.getByTestId('test-dropdown-trigger')).toHaveTextContent(
-      'Option One'
-    );
+    expect(onChangeMock).toHaveBeenCalledWith('one');
     expect(screen.getByTestId('test-dropdown-trigger')).toHaveFocus();
     expect(
       screen.queryByTestId('test-dropdown-options')
@@ -182,9 +189,8 @@ describe('DropdownMenu', () => {
     expect(screen.getByTestId('option-1')).toHaveClass('focused-option');
 
     await userEvent.keyboard(' ');
-    expect(screen.getByTestId('test-dropdown-trigger')).toHaveTextContent(
-      'Option One'
-    );
+    expect(onChangeMock).toHaveBeenCalledWith('one');
+
     expect(screen.getByTestId('test-dropdown-trigger')).toHaveFocus();
     expect(
       screen.queryByTestId('test-dropdown-options')
@@ -198,7 +204,7 @@ describe('DropdownMenu', () => {
         label='Test Dropdown'
         options={options}
         disabled={true}
-        onChange={() => ''}
+        onChange={onChangeMock}
       />
     );
 
