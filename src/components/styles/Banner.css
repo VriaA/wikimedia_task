@@ -17,14 +17,14 @@
 	transition: 0.5s all ease-in-out;
 }
 
-.banner:has( a:focus ) {
+.banner:has( a:focus-visible ) {
 	outline-offset: 2px;
 	outline: 2px solid #36c;
 }
 
-.banner:focus,
-.banner-text:focus,
-.banner-image:focus {
+.banner:focus-visible,
+.banner-text:focus-visible,
+.banner-image:focus-visible {
 	outline: 3px solid #233566;
 	outline-offset: 3px;
 	border-radius: 2px;

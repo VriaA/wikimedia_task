@@ -18,8 +18,7 @@
 }
 
 .dropdown-trigger:focus {
-	outline: 2px solid #36c;
-	border-color: #36c;
+	outline-width: 0;
 }
 
 .dropdown-options {
@@ -58,4 +57,10 @@
 
 .dropdown-icon {
 	transition: 0.5s transform ease;
+}
+
+@media screen and ( min-width: 1200px ) {
+	.dropdown-trigger:focus {
+		outline: 2px solid #36c;
+	}
 }

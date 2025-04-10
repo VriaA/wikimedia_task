@@ -18,9 +18,15 @@
 }
 
 .text-area-input:focus-visible {
-	outline: 1px solid #36c;
+	outline: 0;
 }
 
 .text-area-input::placeholder {
 	color: #72777d;
+}
+
+@media screen and ( min-width: 1200px ) {
+	.text-area-input:focus-visible {
+		outline: 1px solid #36c;
+	}
 }
