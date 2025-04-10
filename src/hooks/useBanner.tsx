@@ -209,7 +209,7 @@ export default function useBanner(
       }
 
       if (e.key === 'Enter' || e.key === ' ') {
-        e.preventDefault();
+        if (e.key === ' ') e.preventDefault();
         const newSelectedElement = selectElement(e.target as HTMLElement);
         setSelectedElement(newSelectedElement);
       }
