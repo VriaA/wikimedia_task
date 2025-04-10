@@ -1,25 +1,25 @@
 import React, { useState, ReactNode, useCallback, useMemo } from 'react';
 import { bannerContext } from './context';
 import {
-  BannerElementStyle,
+  BannerElementConfig,
   BannerElements,
   ViewportType,
   BannerElementType
 } from '../types/banner';
-import { initialElements } from '../components/styles/BannerElements';
+import { initialBannerConfig } from '../constants/bannerPresets';
 
 export function BannerContextProvider({ children }: { children: ReactNode }) {
-  const [elements, setElements] = useState<BannerElements>(initialElements);
+  const [elements, setElements] = useState<BannerElements>(initialBannerConfig);
   const [selectedElement, setSelectedElement] =
     useState<BannerElementType>(null);
   const [currentViewport, setCurrentViewport] =
     useState<ViewportType>('desktop');
 
-  const updateElementStyle = useCallback(
+  const updateElementConfig = useCallback(
     (
       element: BannerElementType,
       viewport: ViewportType,
-      style: Partial<BannerElementStyle>
+      style: Partial<BannerElementConfig>
     ) => {
       if (!element) return;
 
@@ -43,9 +43,9 @@ export function BannerContextProvider({ children }: { children: ReactNode }) {
       currentViewport,
       setSelectedElement,
       setCurrentViewport,
-      updateElementStyle
+      updateElementConfig
     }),
-    [elements, selectedElement, currentViewport, updateElementStyle]
+    [elements, selectedElement, currentViewport, updateElementConfig]
   );
   return (
     <bannerContext.Provider value={value}>{children}</bannerContext.Provider>

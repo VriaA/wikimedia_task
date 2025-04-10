@@ -6,26 +6,31 @@ export default function BannerContent({
 }: {
   isPreviewMode: boolean;
 }) {
-  const { textStyle, imageStyle, textStyles, imageStyles, selectedElement } =
-    useBanner();
+  const {
+    currentTextStyle,
+    currentImageStyle,
+    textConfig,
+    imageConfig,
+    selectedElement
+  } = useBanner();
 
   return (
     <>
       <p
         tabIndex={isPreviewMode ? undefined : 0}
         className={`banner-text ${selectedElement === 'text' ? 'selected' : ''}`}
-        style={textStyle}
+        style={currentTextStyle}
         data-element='text'
         data-testid='banner-text'>
-        {textStyles.textContent}
+        {textConfig.textContent}
       </p>
 
       <img
         tabIndex={isPreviewMode ? undefined : 0}
-        src={imageStyles.src}
-        alt={imageStyles.imgAlt}
+        src={imageConfig.src}
+        alt={imageConfig.imgAlt}
         className={`banner-image ${selectedElement === 'image' ? 'selected' : ''}`}
-        style={imageStyle}
+        style={currentImageStyle}
         data-element='image'
         data-testid='banner-image'
       />

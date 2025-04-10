@@ -2,13 +2,13 @@ export type BannerElementType = 'text' | 'image' | 'banner' | null;
 
 export type ViewportType = 'mobile' | 'tablet' | 'desktop';
 
-export type UpdateElementStyleType = (
+export type updateElementConfigType = (
   element: BannerElementType,
   viewport: ViewportType,
-  style: Partial<BannerElementStyle>
+  style: Partial<BannerElementConfig>
 ) => void;
 
-export type BannerElementStyle = {
+export type BannerElementConfig = {
   textContent?: string;
   fontFamily?: string;
   fontSize?: number;
@@ -45,19 +45,19 @@ export type BannerElementStyle = {
 
 export type BannerElements = {
   banner: {
-    mobile: BannerElementStyle;
-    tablet: BannerElementStyle;
-    desktop: BannerElementStyle;
+    mobile: BannerElementConfig;
+    tablet: BannerElementConfig;
+    desktop: BannerElementConfig;
   };
   text: {
-    mobile: BannerElementStyle;
-    tablet: BannerElementStyle;
-    desktop: BannerElementStyle;
+    mobile: BannerElementConfig;
+    tablet: BannerElementConfig;
+    desktop: BannerElementConfig;
   };
   image: {
-    mobile: BannerElementStyle;
-    tablet: BannerElementStyle;
-    desktop: BannerElementStyle;
+    mobile: BannerElementConfig;
+    tablet: BannerElementConfig;
+    desktop: BannerElementConfig;
   };
 };
 
@@ -67,7 +67,7 @@ export type BannerContext = {
   setSelectedElement: (element: BannerElementType) => void;
   currentViewport: ViewportType;
   setCurrentViewport: React.Dispatch<React.SetStateAction<ViewportType>>;
-  updateElementStyle: UpdateElementStyleType;
+  updateElementConfig: updateElementConfigType;
 };
 
 export type BannerPosition =
@@ -84,11 +84,11 @@ export type UseBanner = {
   toggleMode: () => void;
   handleBannerClick: (e: React.MouseEvent) => void;
   handleKeyDown: (e: React.KeyboardEvent) => void;
-  bannerStyle: React.CSSProperties;
-  textStyle: React.CSSProperties;
-  imageStyle: React.CSSProperties;
+  currentBannerStyle: React.CSSProperties;
+  currentTextStyle: React.CSSProperties;
+  currentImageStyle: React.CSSProperties;
   bannerPosition: BannerPosition;
-  bannerStyles: BannerElementStyle;
-  textStyles: BannerElementStyle;
-  imageStyles: BannerElementStyle;
+  bannerConfig: BannerElementConfig;
+  textConfig: BannerElementConfig;
+  imageConfig: BannerElementConfig;
 };

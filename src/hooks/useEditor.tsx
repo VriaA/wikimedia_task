@@ -14,7 +14,7 @@ export default function useEditor(): UseEditor {
     selectedElement,
     currentViewport,
     setCurrentViewport,
-    updateElementStyle
+    updateElementConfig
   } = useContext(bannerContext) as BannerContext;
   const [selectedFont, setSelectedFont] = useState('');
 
@@ -41,7 +41,7 @@ export default function useEditor(): UseEditor {
   );
 
   // GETS THE STYLES OF THE SELECTED ELEMENT FOR THE CURRENT VIEWPORT
-  const selectedElementStyle = useMemo(
+  const selectedElementConfig = useMemo(
     () => (selectedElement ? elements[selectedElement][currentViewport] : null),
     [selectedElement, elements, currentViewport]
   );
@@ -51,12 +51,12 @@ export default function useEditor(): UseEditor {
     (elementType: BannerElementType | null, property: string) =>
       (value: string | number) => {
         if (selectedElement === elementType) {
-          updateElementStyle(selectedElement, currentViewport, {
+          updateElementConfig(selectedElement, currentViewport, {
             [property]: value
           });
         }
       },
-    [currentViewport, selectedElement, updateElementStyle]
+    [currentViewport, selectedElement, updateElementConfig]
   );
 
   const handleDirChange = elementUpdateHandler('banner', 'dir');
@@ -91,7 +91,7 @@ export default function useEditor(): UseEditor {
         selectedElement &&
         elements[selectedElement]?.[currentViewport]?.[property]
       ) {
-        updateElementStyle(selectedElement, currentViewport, {
+        updateElementConfig(selectedElement, currentViewport, {
           [property]: {
             ...elements[selectedElement][currentViewport][property],
             [side]: value
@@ -99,7 +99,7 @@ export default function useEditor(): UseEditor {
         });
       }
     },
-    [currentViewport, elements, selectedElement, updateElementStyle]
+    [currentViewport, elements, selectedElement, updateElementConfig]
   );
 
   const handlePaddingChange = useCallback(
@@ -128,55 +128,55 @@ export default function useEditor(): UseEditor {
     (fontValue: string) => {
       setSelectedFont(fontValue);
       if (selectedElement === 'text') {
-        updateElementStyle(selectedElement, currentViewport, {
+        updateElementConfig(selectedElement, currentViewport, {
           fontFamily: fontValue
         });
       }
     },
-    [currentViewport, selectedElement, updateElementStyle]
+    [currentViewport, selectedElement, updateElementConfig]
   );
 
   const handleWidthChange = useCallback(
     (value: number) => {
       if (selectedElement) {
-        updateElementStyle(selectedElement, currentViewport, {
+        updateElementConfig(selectedElement, currentViewport, {
           width: value
         });
       }
     },
-    [currentViewport, selectedElement, updateElementStyle]
+    [currentViewport, selectedElement, updateElementConfig]
   );
 
   const handleHeightChange = useCallback(
     (value: number) => {
       if (selectedElement) {
-        updateElementStyle(selectedElement, currentViewport, {
+        updateElementConfig(selectedElement, currentViewport, {
           height: value
         });
       }
     },
-    [currentViewport, selectedElement, updateElementStyle]
+    [currentViewport, selectedElement, updateElementConfig]
   );
 
   const handleBgColorChange = useCallback(
     (color: string) => {
       if (selectedElement === 'banner') {
-        updateElementStyle(selectedElement, currentViewport, {
+        updateElementConfig(selectedElement, currentViewport, {
           backgroundColor: color,
           backgroundImage: ''
         });
       }
     },
-    [currentViewport, selectedElement, updateElementStyle]
+    [currentViewport, selectedElement, updateElementConfig]
   );
 
   const handleBorderColorChange = useCallback(
     (borderColor: string) => {
       if (selectedElement) {
-        updateElementStyle(selectedElement, currentViewport, { borderColor });
+        updateElementConfig(selectedElement, currentViewport, { borderColor });
       }
     },
-    [currentViewport, selectedElement, updateElementStyle]
+    [currentViewport, selectedElement, updateElementConfig]
   );
 
   const handleImageChange = useCallback(
@@ -190,12 +190,12 @@ export default function useEditor(): UseEditor {
           const result = e.target.result as string;
 
           if (selectedElement === 'banner') {
-            updateElementStyle(selectedElement, currentViewport, {
+            updateElementConfig(selectedElement, currentViewport, {
               backgroundImage: result,
               backgroundColor: undefined
             });
           } else if (selectedElement === 'image') {
-            updateElementStyle(selectedElement, currentViewport, {
+            updateElementConfig(selectedElement, currentViewport, {
               src: result
             });
           }
@@ -204,14 +204,14 @@ export default function useEditor(): UseEditor {
 
       reader.readAsDataURL(file);
     },
-    [currentViewport, selectedElement, updateElementStyle]
+    [currentViewport, selectedElement, updateElementConfig]
   );
 
   return useMemo(
     () => ({
       currentViewport,
       handleViewportChange,
-      selectedElementStyle,
+      selectedElementConfig,
       handleBorderChange,
       fontWeightsToRender,
       handleBgColorChange,
@@ -256,7 +256,7 @@ export default function useEditor(): UseEditor {
       handleViewportChange,
       handleWidthChange,
       selectedElement,
-      selectedElementStyle
+      selectedElementConfig
     ]
   );
 }

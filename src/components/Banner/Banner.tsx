@@ -23,9 +23,9 @@ export default function Banner() {
     toggleMode,
     handleBannerClick,
     handleKeyDown,
-    bannerStyle,
+    currentBannerStyle,
     bannerPosition,
-    bannerStyles
+    bannerConfig
   } = useBanner(bannerRef);
   const isPreviewMode = mode === 'preview';
 
@@ -36,18 +36,18 @@ export default function Banner() {
         {...(!isPreviewMode && { role: 'region' })}
         {...(!isPreviewMode && { 'aria-labelledby': 'edit-mode-heading' })}
         style={{ display: isVisible ? 'block' : 'none', ...bannerPosition }}
-        dir={bannerStyles.dir}>
+        dir={bannerConfig.dir}>
         <div
           {...(isPreviewMode && { role: 'banner' })}
           ref={bannerRef}
           className={`banner ${selectedElement === 'banner' ? 'selected' : ''}`}
-          style={bannerStyle}
+          style={currentBannerStyle}
           onClick={handleBannerClick}
           onKeyDown={handleKeyDown}
           data-element='banner'
           data-testid='banner'
           {...(!isPreviewMode && { tabIndex: 0 })}>
-          {bannerStyles.backgroundImage && (
+          {bannerConfig.backgroundImage && (
             <div
               className='banner-bg-image-overlay'
               data-testid='banner-bg-image-overlay'
@@ -57,7 +57,7 @@ export default function Banner() {
           {isPreviewMode ? (
             <a
               className='banner-link'
-              href={bannerStyles.bannerLink}
+              href={bannerConfig.bannerLink}
               data-testid='banner-link'>
               <BannerContent isPreviewMode={isPreviewMode} />
             </a>

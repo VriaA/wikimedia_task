@@ -16,7 +16,7 @@ export default function Editor() {
   const {
     currentViewport,
     handleViewportChange,
-    selectedElementStyle,
+    selectedElementConfig,
     handleBorderChange,
     fontWeightsToRender,
     handleBgColorChange,
@@ -81,7 +81,7 @@ export default function Editor() {
             <TextArea
               id='banner-text-field'
               label='Text'
-              value={selectedElementStyle?.textContent || ''}
+              value={selectedElementConfig?.textContent || ''}
               onChange={handleTextChange}
               className='typography-textarea transition-opacity-300-ease'
               disabled={!selectedElement || selectedElement !== 'text'}
@@ -91,7 +91,7 @@ export default function Editor() {
               id='font-family-dropdown'
               label='Font Family'
               options={fontFamily}
-              value={selectedElementStyle?.fontFamily || ''}
+              value={selectedElementConfig?.fontFamily || ''}
               onChange={handleFontChange}
               className='typography-font-family transition-opacity-300-ease'
               disabled={!selectedElement || selectedElement !== 'text'}
@@ -99,7 +99,7 @@ export default function Editor() {
 
             <ColorPicker
               label='Color'
-              elementColor={selectedElementStyle?.color || '#000'}
+              elementColor={selectedElementConfig?.color || '#000'}
               onChange={handleColorChange}
               className='typography-color transition-opacity-300-ease'
               disabled={!selectedElement || selectedElement !== 'text'}
@@ -111,7 +111,7 @@ export default function Editor() {
               min={0}
               step={1}
               label='Font Size'
-              value={selectedElementStyle?.fontSize}
+              value={selectedElementConfig?.fontSize}
               onChange={handleFontSizeChange}
               className='typography-font-size transition-opacity-300-ease'
               disabled={!selectedElement || selectedElement !== 'text'}
@@ -120,7 +120,7 @@ export default function Editor() {
             <DropdownMenu
               id='font-weight-dropdown'
               label='Font Weight'
-              value={selectedElementStyle?.fontWeight || '400'}
+              value={selectedElementConfig?.fontWeight || '400'}
               options={fontWeightsToRender}
               onChange={handleFontWeightChange}
               className='typography-font-weight transition-opacity-300-ease'
@@ -131,7 +131,7 @@ export default function Editor() {
               id='line-height-field'
               min={0}
               label='Line height'
-              value={selectedElementStyle?.lineHeight}
+              value={selectedElementConfig?.lineHeight}
               onChange={handleLineHeightChange}
               className='typography-line-height transition-opacity-300-ease'
               step={0.1}
@@ -143,7 +143,7 @@ export default function Editor() {
               min={0}
               step={0.01}
               label='Letter Spacing'
-              value={selectedElementStyle?.letterSpacing}
+              value={selectedElementConfig?.letterSpacing}
               onChange={handleLetterSpacingChange}
               className='typography-letter-spacing transition-opacity-300-ease'
               disabled={!selectedElement || selectedElement !== 'text'}
@@ -156,7 +156,7 @@ export default function Editor() {
                   id='dir-dropdown'
                   label='Text Direction'
                   options={dir}
-                  value={selectedElementStyle?.dir || ''}
+                  value={selectedElementConfig?.dir || ''}
                   onChange={handleDirChange}
                   className='typography-dir transition-opacity-300-ease'
                   disabled={!selectedElement || selectedElement !== 'banner'}
@@ -164,7 +164,7 @@ export default function Editor() {
                 <TextInput
                   id='banner-link-field'
                   label='Banner Link'
-                  value={selectedElementStyle?.bannerLink || ''}
+                  value={selectedElementConfig?.bannerLink || ''}
                   onChange={handleLinkChange}
                   className='typography-link transition-opacity-300-ease'
                   disabled={!selectedElement || selectedElement !== 'banner'}
@@ -182,7 +182,7 @@ export default function Editor() {
               min={0}
               step={1}
               label='Width'
-              value={selectedElementStyle?.width}
+              value={selectedElementConfig?.width}
               onChange={handleWidthChange}
               disabled={!selectedElement || selectedElement === 'banner'}
               className='transition-opacity-300-ease'
@@ -192,7 +192,7 @@ export default function Editor() {
               min={0}
               step={1}
               label='Height'
-              value={selectedElementStyle?.height}
+              value={selectedElementConfig?.height}
               onChange={handleHeightChange}
               disabled={!selectedElement}
               className='transition-opacity-300-ease'
@@ -209,7 +209,7 @@ export default function Editor() {
                   min={0}
                   step={1}
                   side='right'
-                  value={selectedElementStyle?.padding?.right}
+                  value={selectedElementConfig?.padding?.right}
                   onChange={(value) => handlePaddingChange('right', value)}
                   disabled={
                     !selectedElement || canDisablePositionAndPaddingInputs
@@ -222,7 +222,7 @@ export default function Editor() {
                   min={0}
                   step={1}
                   side='left'
-                  value={selectedElementStyle?.padding?.left}
+                  value={selectedElementConfig?.padding?.left}
                   onChange={(value) => handlePaddingChange('left', value)}
                   disabled={
                     !selectedElement || canDisablePositionAndPaddingInputs
@@ -235,7 +235,7 @@ export default function Editor() {
                   step={1}
                   min={0}
                   side='bottom'
-                  value={selectedElementStyle?.padding?.bottom}
+                  value={selectedElementConfig?.padding?.bottom}
                   onChange={(value) => handlePaddingChange('bottom', value)}
                   disabled={
                     !selectedElement || canDisablePositionAndPaddingInputs
@@ -248,7 +248,7 @@ export default function Editor() {
                   step={1}
                   min={0}
                   side='top'
-                  value={selectedElementStyle?.padding?.top}
+                  value={selectedElementConfig?.padding?.top}
                   onChange={(value) => handlePaddingChange('top', value)}
                   disabled={
                     !selectedElement || canDisablePositionAndPaddingInputs
@@ -268,7 +268,7 @@ export default function Editor() {
                   id='position-left-field'
                   step={1}
                   side='left'
-                  value={selectedElementStyle?.position?.left}
+                  value={selectedElementConfig?.position?.left}
                   onChange={(value) => handlePositionChange('left', value)}
                   disabled={!selectedElement || selectedElement === 'banner'}
                   className='transition-opacity-300-ease'
@@ -279,7 +279,7 @@ export default function Editor() {
                   id='position-top-field'
                   step={1}
                   side='top'
-                  value={selectedElementStyle?.position?.top}
+                  value={selectedElementConfig?.position?.top}
                   onChange={(value) => handlePositionChange('top', value)}
                   disabled={!selectedElement || selectedElement === 'banner'}
                   className='transition-opacity-300-ease'
@@ -305,7 +305,7 @@ export default function Editor() {
                   min={0}
                   step={1}
                   side='right'
-                  value={selectedElementStyle?.border?.right}
+                  value={selectedElementConfig?.border?.right}
                   onChange={(value) => handleBorderChange('right', value)}
                   disabled={!selectedElement}
                   className='transition-opacity-300-ease'
@@ -316,7 +316,7 @@ export default function Editor() {
                   min={0}
                   step={1}
                   side='left'
-                  value={selectedElementStyle?.border?.left}
+                  value={selectedElementConfig?.border?.left}
                   onChange={(value) => handleBorderChange('left', value)}
                   disabled={!selectedElement}
                   className='transition-opacity-300-ease'
@@ -327,7 +327,7 @@ export default function Editor() {
                   step={1}
                   min={0}
                   side='bottom'
-                  value={selectedElementStyle?.border?.bottom}
+                  value={selectedElementConfig?.border?.bottom}
                   onChange={(value) => handleBorderChange('bottom', value)}
                   disabled={!selectedElement}
                   className='transition-opacity-300-ease'
@@ -338,7 +338,7 @@ export default function Editor() {
                   step={1}
                   min={0}
                   side='top'
-                  value={selectedElementStyle?.border?.top}
+                  value={selectedElementConfig?.border?.top}
                   onChange={(value) => handleBorderChange('top', value)}
                   disabled={!selectedElement}
                   className='transition-opacity-300-ease'
@@ -348,7 +348,7 @@ export default function Editor() {
 
             <ColorPicker
               label='Border Color'
-              elementColor={selectedElementStyle?.borderColor || '#000'}
+              elementColor={selectedElementConfig?.borderColor || '#000'}
               onChange={handleBorderColorChange}
               className='appearance-border-color transition-opacity-300-ease'
               disabled={!selectedElement}
@@ -357,7 +357,7 @@ export default function Editor() {
 
             <ColorPicker
               label='Background Color'
-              elementColor={selectedElementStyle?.backgroundColor || '#000'}
+              elementColor={selectedElementConfig?.backgroundColor || '#000'}
               onChange={handleBgColorChange}
               className='appearance-bg-color transition-opacity-300-ease'
               disabled={!selectedElement || selectedElement !== 'banner'}
@@ -382,7 +382,7 @@ export default function Editor() {
                 id='image-alt-text'
                 label='Image Alt Text (Leave blank for decorative images)'
                 placeholder='Describe the image for accessibility'
-                value={selectedElementStyle?.imgAlt || ''}
+                value={selectedElementConfig?.imgAlt || ''}
                 onChange={handleAltTextChange}
                 disabled={!selectedElement || selectedElement !== 'image'}
                 className='appearance-image-alt-text transition-opacity-300-ease'

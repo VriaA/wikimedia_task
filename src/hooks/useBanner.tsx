@@ -14,10 +14,10 @@ import {
   UseBanner
 } from '../types/banner';
 import {
-  getCurrentBannerStyle,
-  getCurrenttextStyle,
-  getCurrentImageStyle
-} from '../components/styles/BannerElements';
+  getcurrentBannerStyle,
+  getcurrentTextStyle,
+  getcurrentImageStyle
+} from '../utils/bannerStyleUtils.ts';
 import tinycolor from 'tinycolor2';
 
 export default function useBanner(
@@ -34,13 +34,17 @@ export default function useBanner(
   const [canShowContrastMessage, setCanShowContrastMessage] =
     useState<boolean>(false);
 
-  const bannerStyles = elements.banner[activeViewport];
-  const textStyles = elements.text[activeViewport];
-  const imageStyles = elements.image[activeViewport];
+  const bannerConfig = elements.banner[activeViewport];
+  const textConfig = elements.text[activeViewport];
+  const imageConfig = elements.image[activeViewport];
 
-  const bannerStyle = getCurrentBannerStyle(bannerStyles, mode, bannerWidth);
-  const textStyle = getCurrenttextStyle(textStyles);
-  const imageStyle = getCurrentImageStyle(imageStyles);
+  const currentBannerStyle = getcurrentBannerStyle(
+    bannerConfig,
+    mode,
+    bannerWidth
+  );
+  const currentTextStyle = getcurrentTextStyle(textConfig);
+  const currentImageStyle = getcurrentImageStyle(imageConfig);
 
   const bannerPosition = useMemo(
     () =>
@@ -134,23 +138,23 @@ export default function useBanner(
   // CHECKS CONTRAST AND CHANGES CONTRAST MESSAGE VISIBILITY ACCORDINGLY
   useEffect(() => {
     if (
-      bannerStyle.backgroundImage ||
-      !bannerStyle.backgroundColor ||
-      !textStyle.color
+      currentBannerStyle.backgroundImage ||
+      !currentBannerStyle.backgroundColor ||
+      !currentTextStyle.color
     )
       return;
-    const fontSize = textStyle.fontSize;
+    const fontSize = currentTextStyle.fontSize;
     const isBold =
-      textStyle.fontWeight &&
-      ['700', '800', '900'].includes(textStyle.fontWeight);
+      currentTextStyle.fontWeight &&
+      ['700', '800', '900'].includes(currentTextStyle.fontWeight);
 
     // WCAG LARGE TEXT DEFINITION (19pts or 14pts bold)
     const isLargeText =
       fontSize && (fontSize >= 24 || (fontSize >= 18.67 && isBold));
 
     const isValidContrastRatio = tinycolor.isReadable(
-      textStyle.color,
-      bannerStyle.backgroundColor,
+      currentTextStyle.color,
+      currentBannerStyle.backgroundColor,
       {
         level: 'AA',
         size: isLargeText ? 'large' : 'small'
@@ -158,11 +162,11 @@ export default function useBanner(
     );
     setCanShowContrastMessage(!isValidContrastRatio);
   }, [
-    textStyle.color,
-    bannerStyle.backgroundColor,
-    bannerStyle.backgroundImage,
-    textStyle.fontSize,
-    textStyle.fontWeight
+    currentTextStyle.color,
+    currentBannerStyle.backgroundColor,
+    currentBannerStyle.backgroundImage,
+    currentTextStyle.fontSize,
+    currentTextStyle.fontWeight
   ]);
 
   // TOGGLES MODE BETWEEN EDIT & PREVIEW
@@ -233,28 +237,28 @@ export default function useBanner(
       toggleMode,
       handleBannerClick,
       handleKeyDown,
-      bannerStyle,
-      textStyle,
-      imageStyle,
+      currentBannerStyle,
+      currentTextStyle,
+      currentImageStyle,
       bannerPosition,
-      bannerStyles,
-      textStyles,
-      imageStyles
+      bannerConfig,
+      textConfig,
+      imageConfig
     }),
     [
       bannerPosition,
-      bannerStyle,
-      bannerStyles,
+      currentBannerStyle,
+      bannerConfig,
       canShowContrastMessage,
       handleBannerClick,
       handleDeselectButtonClick,
       handleKeyDown,
-      imageStyle,
-      imageStyles,
+      currentImageStyle,
+      imageConfig,
       isVisible,
       selectedElement,
-      textStyle,
-      textStyles,
+      currentTextStyle,
+      textConfig,
       toggleMode
     ]
   );
