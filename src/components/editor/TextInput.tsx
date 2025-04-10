@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { memo } from 'react';
 import './styles/TextInput.css';
 
 type TextInputProps = {
@@ -7,22 +7,19 @@ type TextInputProps = {
   onChange: (value: string) => void;
   value?: string;
   className?: string;
-  disabled: boolean;
+  disabled?: boolean;
   id: string;
 };
 
-export default function TextInput({
+function TextInput({
   label,
   placeholder,
   onChange,
   value,
-  className,
-  disabled,
+  className = '',
+  disabled = false,
   id
 }: TextInputProps) {
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) =>
-    onChange(e.target.value);
-
   return (
     <div
       className={`form-input-wrapper ${className} ${disabled ? 'disabled' : ''}`}>
@@ -35,12 +32,14 @@ export default function TextInput({
         id={`${id}-input`}
         data-testid={`${id}-input`}
         type='text'
-        className={`text-input ${className}`}
+        className='text-input'
         value={value}
-        onChange={handleChange}
+        onChange={(e) => onChange(e.target.value)}
         placeholder={placeholder}
         {...(disabled && { disabled: true })}
       />
     </div>
   );
 }
+
+export default memo(TextInput);

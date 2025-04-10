@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { memo } from 'react';
 import LeftSideIcon from '../../assets/left_side_icon.svg?react';
 import RightSideIcon from '../../assets/right_side_icon.svg?react';
 import BottomSideIcon from '../../assets/bottom_side_icon.svg?react';
@@ -18,50 +18,51 @@ type NumberInputProps = {
   canHaveNegativeValue?: boolean;
 };
 
-export default function NumberInput({
+function SideIndicator({
+  side
+}: {
+  side: 'left' | 'right' | 'top' | 'bottom';
+}) {
+  return (
+    <>
+      {side === 'left' ? (
+        <LeftSideIcon
+          className='flex-none'
+          aria-hidden='true'
+        />
+      ) : side === 'right' ? (
+        <RightSideIcon
+          className='flex-none'
+          aria-hidden='true'
+        />
+      ) : side === 'top' ? (
+        <TopSideIcon
+          className='flex-none'
+          aria-hidden='true'
+        />
+      ) : (
+        <BottomSideIcon
+          className='flex-none'
+          aria-hidden='true'
+        />
+      )}
+    </>
+  );
+}
+
+function NumberInput({
   label,
   side,
   value = 0,
   onChange,
-  className,
-  disabled,
+  className = '',
+  disabled = false,
   min,
   step,
   id,
   canHaveNegativeValue
 }: NumberInputProps) {
   const property = id.split('-')[0];
-
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) =>
-    onChange(Number(e.target.value));
-
-  function SideIndicator() {
-    return (
-      <>
-        {side === 'left' ? (
-          <LeftSideIcon
-            className='flex-none'
-            aria-hidden='true'
-          />
-        ) : side === 'right' ? (
-          <RightSideIcon
-            className='flex-none'
-            aria-hidden='true'
-          />
-        ) : side === 'top' ? (
-          <TopSideIcon
-            className='flex-none'
-            aria-hidden='true'
-          />
-        ) : (
-          <BottomSideIcon
-            className='flex-none'
-            aria-hidden='true'
-          />
-        )}
-      </>
-    );
-  }
 
   return (
     <div
@@ -75,17 +76,17 @@ export default function NumberInput({
         </label>
       )}
       <div className='number-input-wrapper'>
-        {side && <SideIndicator />}
+        {side && <SideIndicator side={side} />}
         <input
           id={`${id}-input`}
           type='number'
           className='number-input'
           value={!canHaveNegativeValue && value < 0 ? 0 : value}
-          onChange={handleChange}
+          onChange={(e) => onChange(Number(e.target.value))}
           step={step}
           data-testid={`${id}-input`}
           {...(disabled && { disabled: true })}
-          {...(min && { min: min })}
+          {...(min != null && { min: min })}
           {...(side && { 'aria-label': `${property} ${side}` })}
         />
         <span className='unit-text'>px</span>
@@ -93,3 +94,4 @@ export default function NumberInput({
     </div>
   );
 }
+export default memo(NumberInput);

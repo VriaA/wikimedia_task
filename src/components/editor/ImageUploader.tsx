@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useCallback, memo } from 'react';
 import './styles/ImageUploader.css';
 
 type ImageUploaderProps = {
@@ -9,7 +9,7 @@ type ImageUploaderProps = {
   id: string;
 };
 
-export default function ImageUploader({
+function ImageUploader({
   onImageUpload,
   label,
   maxSizeKB = 250,
@@ -19,54 +19,81 @@ export default function ImageUploader({
   const [isDragging, setIsDragging] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  function preventDefaults(e: React.DragEvent<HTMLDivElement>) {
+  const preventDefaults = useCallback((e: React.DragEvent<HTMLDivElement>) => {
     e.preventDefault();
     e.stopPropagation();
-  }
+  }, []);
 
-  function handleDragEnter(e: React.DragEvent<HTMLDivElement>) {
-    preventDefaults(e);
-    setIsDragging(true);
-  }
+  const handleDragEnter = useCallback(
+    (e: React.DragEvent<HTMLDivElement>) => {
+      preventDefaults(e);
+      setIsDragging(true);
+    },
+    [preventDefaults]
+  );
 
-  function handleDragLeave(e: React.DragEvent<HTMLDivElement>) {
-    preventDefaults(e);
-    setIsDragging(false);
-  }
+  const handleDragLeave = useCallback(
+    (e: React.DragEvent<HTMLDivElement>) => {
+      preventDefaults(e);
+      setIsDragging(false);
+    },
+    [preventDefaults]
+  );
 
-  const handleDragOver = (e: React.DragEvent<HTMLDivElement>) =>
-    preventDefaults(e);
+  const validateAndUploadFile = useCallback(
+    (file: File) => {
+      if (!file.type.startsWith('image/')) {
+        alert('Please upload an image file');
+        return;
+      }
 
-  function handleDrop(e: React.DragEvent<HTMLDivElement>) {
-    preventDefaults(e);
-    setIsDragging(false);
+      const fileSizeKB = file.size / 1024;
+      if (fileSizeKB > maxSizeKB) {
+        alert(`File size exceeds ${maxSizeKB} KB limit`);
+        return;
+      }
 
-    const files = e.dataTransfer.files;
-    if (files && files.length > 0) {
-      validateAndUploadFile(files[0]);
-    }
-  }
+      onImageUpload(file);
+    },
+    [maxSizeKB, onImageUpload]
+  );
 
-  function handleFileInputChange(e: React.ChangeEvent<HTMLInputElement>) {
-    if (e.target.files && e.target.files.length > 0) {
-      validateAndUploadFile(e.target.files[0]);
-    }
-  }
+  const handleDrop = useCallback(
+    (e: React.DragEvent<HTMLDivElement>) => {
+      preventDefaults(e);
+      setIsDragging(false);
 
-  function validateAndUploadFile(file: File) {
-    if (!file.type.startsWith('image/')) {
-      alert('Please upload an image file');
-      return;
-    }
+      const files = e.dataTransfer.files;
+      if (files && files.length > 0) {
+        validateAndUploadFile(files[0]);
+      }
+    },
+    [validateAndUploadFile, preventDefaults]
+  );
 
-    const fileSizeKB = file.size / 1024;
-    if (fileSizeKB > maxSizeKB) {
-      alert(`File size exceeds ${maxSizeKB} KB limit`);
-      return;
-    }
+  const handleFileInputChange = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      if (e.target.files && e.target.files.length > 0) {
+        validateAndUploadFile(e.target.files[0]);
+      }
+    },
+    [validateAndUploadFile]
+  );
 
-    onImageUpload(file);
-  }
+  const handleKeyDown = useCallback(
+    (e: React.KeyboardEvent<HTMLDivElement>) => {
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        handleBrowseClick();
+      }
+    },
+    []
+  );
+
+  const handleDragOver = useCallback(
+    (e: React.DragEvent<HTMLDivElement>) => preventDefaults(e),
+    [preventDefaults]
+  );
 
   const handleBrowseClick = () => fileInputRef.current?.click();
 
@@ -88,7 +115,9 @@ export default function ImageUploader({
         onDragEnter={handleDragEnter}
         onDragLeave={handleDragLeave}
         onDragOver={handleDragOver}
-        onDrop={handleDrop}>
+        onDrop={handleDrop}
+        tabIndex={0}
+        onKeyDown={handleKeyDown}>
         <div className='image-uploader-content flex-column'>
           <div className='image-uploader-text'>
             <span>Drop image or&nbsp;</span>
@@ -118,3 +147,5 @@ export default function ImageUploader({
     </div>
   );
 }
+
+export default memo(ImageUploader);

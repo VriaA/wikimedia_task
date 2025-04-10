@@ -1,227 +1,262 @@
-import { useState, useEffect, useContext } from 'react';
+import { useState, useEffect, useContext, useCallback, useMemo } from 'react';
 import { bannerContext } from '../contexts/context';
-import type { BannerContext } from '../types/banner';
+import type {
+  BannerContext,
+  ViewportType,
+  BannerElementType
+} from '../types/banner';
 import { fontWeights, defaultFontWeight } from '../constants/FontWeights';
 import type { UseEditor } from '../types/editor';
 
 export default function useEditor(): UseEditor {
-  const { elements, selectedElement, currentViewport, updateElementStyle } =
-    useContext(bannerContext) as BannerContext;
+  const {
+    elements,
+    selectedElement,
+    currentViewport,
+    setCurrentViewport,
+    updateElementStyle
+  } = useContext(bannerContext) as BannerContext;
   const [selectedFont, setSelectedFont] = useState('');
 
   // FINDS THE FONT OF THE SELECTED ELEMENT
   useEffect(() => {
     if (
       selectedElement === 'text' &&
-      elements.text[currentViewport].fontFamily
+      elements.text?.[currentViewport]?.fontFamily
     ) {
       const fontName = elements.text[currentViewport].fontFamily.toLowerCase();
       setSelectedFont(fontName);
     }
-  }, [selectedElement, elements, currentViewport]);
+  }, [selectedElement, elements.text, currentViewport]);
 
   // GETS AVAILABLE FONT WEIGHTS FOR THE SELECTED FONT OR FALLS BACK TO DEFAULT
-  const fontWeightsToRender = selectedFont
-    ? fontWeights[selectedFont.toLowerCase()]?.weights || [defaultFontWeight]
-    : [defaultFontWeight];
+  const fontWeightsToRender = useMemo(
+    () =>
+      selectedFont
+        ? fontWeights[selectedFont.toLowerCase()]?.weights || [
+            defaultFontWeight
+          ]
+        : [defaultFontWeight],
+    [selectedFont]
+  );
 
   // GETS THE STYLES OF THE SELECTED ELEMENT FOR THE CURRENT VIEWPORT
-  const selectedElementStyle = selectedElement
-    ? elements[selectedElement][currentViewport]
-    : null;
+  const selectedElementStyle = useMemo(
+    () => (selectedElement ? elements[selectedElement][currentViewport] : null),
+    [selectedElement, elements, currentViewport]
+  );
 
-  function handleTextChange(value: string) {
-    if (selectedElement === 'text') {
-      updateElementStyle(selectedElement, currentViewport, {
-        textContent: value
-      });
-    }
-  }
-
-  function handleLinkChange(value: string) {
-    if (selectedElement === 'banner') {
-      updateElementStyle(selectedElement, currentViewport, {
-        bannerLink: value
-      });
-    }
-  }
-
-  function handleFontChange(fontValue: string) {
-    setSelectedFont(fontValue);
-    if (selectedElement === 'text') {
-      updateElementStyle(selectedElement, currentViewport, {
-        fontFamily: fontValue
-      });
-    }
-  }
-
-  function handleDirChange(value: string) {
-    if (selectedElement === 'banner') {
-      updateElementStyle(selectedElement, currentViewport, {
-        dir: value
-      });
-    }
-  }
-
-  function handleFontSizeChange(value: number) {
-    if (selectedElement === 'text') {
-      updateElementStyle(selectedElement, currentViewport, {
-        fontSize: value
-      });
-    }
-  }
-
-  function handleFontWeightChange(value: string) {
-    if (selectedElement === 'text') {
-      updateElementStyle(selectedElement, currentViewport, {
-        fontWeight: value
-      });
-    }
-  }
-
-  function handleLineHeightChange(value: number) {
-    if (selectedElement === 'text') {
-      updateElementStyle(selectedElement, currentViewport, {
-        lineHeight: value
-      });
-    }
-  }
-
-  function handleLetterSpacingChange(value: number) {
-    if (selectedElement === 'text') {
-      updateElementStyle(selectedElement, currentViewport, {
-        letterSpacing: value
-      });
-    }
-  }
-
-  function handleWidthChange(value: number) {
-    if (selectedElement) {
-      updateElementStyle(selectedElement, currentViewport, {
-        width: value
-      });
-    }
-  }
-
-  function handleHeightChange(value: number) {
-    if (selectedElement) {
-      updateElementStyle(selectedElement, currentViewport, {
-        height: value
-      });
-    }
-  }
-
-  function handlePaddingChange(
-    side: 'top' | 'right' | 'bottom' | 'left',
-    value: number
-  ) {
-    if (selectedElement) {
-      updateElementStyle(selectedElement, currentViewport, {
-        padding: {
-          ...elements[selectedElement][currentViewport].padding,
-          [side]: value
-        }
-      });
-    }
-  }
-
-  function handlePositionChange(
-    side: 'top' | 'right' | 'bottom' | 'left',
-    value: number
-  ) {
-    if (selectedElement) {
-      updateElementStyle(selectedElement, currentViewport, {
-        position: {
-          ...elements[selectedElement][currentViewport].position,
-          [side]: value
-        }
-      });
-    }
-  }
-
-  function handleColorChange(color: string) {
-    if (selectedElement === 'text') {
-      updateElementStyle(selectedElement, currentViewport, { color });
-    }
-  }
-
-  function handleBgColorChange(color: string) {
-    if (selectedElement === 'banner') {
-      updateElementStyle(selectedElement, currentViewport, {
-        backgroundColor: color,
-        backgroundImage: ''
-      });
-    }
-  }
-
-  function handleBorderChange(
-    side: 'top' | 'right' | 'bottom' | 'left',
-    value: number
-  ) {
-    if (selectedElement) {
-      updateElementStyle(selectedElement, currentViewport, {
-        border: {
-          ...elements[selectedElement][currentViewport].border,
-          [side]: value
-        }
-      });
-    }
-  }
-
-  function handleBorderColorChange(borderColor: string) {
-    updateElementStyle(selectedElement, currentViewport, { borderColor });
-  }
-
-  function handleImageChange(file: File) {
-    const reader = new FileReader();
-    reader.onload = (e) => {
-      if (e.target?.result) {
-        if (selectedElement === 'banner') {
+  // REUSEABLE HANDLER FOR KNOWN ELEMENT TYPES
+  const elementUpdateHandler = useCallback(
+    (elementType: BannerElementType | null, property: string) =>
+      (value: string | number) => {
+        if (selectedElement === elementType) {
           updateElementStyle(selectedElement, currentViewport, {
-            backgroundImage: e.target.result as string,
-            backgroundColor: undefined
+            [property]: value
           });
         }
-        if (selectedElement === 'image') {
-          updateElementStyle(selectedElement, currentViewport, {
-            src: e.target.result as string
-          });
-        }
+      },
+    [currentViewport, selectedElement, updateElementStyle]
+  );
+
+  const handleDirChange = elementUpdateHandler('banner', 'dir');
+
+  const handleFontSizeChange = elementUpdateHandler('text', 'fontSize');
+
+  const handleFontWeightChange = elementUpdateHandler('text', 'fontWeight');
+
+  const handleLineHeightChange = elementUpdateHandler('text', 'lineHeight');
+
+  const handleLetterSpacingChange = elementUpdateHandler(
+    'text',
+    'letterSpacing'
+  );
+
+  const handleAltTextChange = elementUpdateHandler('image', 'imgAlt');
+
+  const handleColorChange = elementUpdateHandler('text', 'color');
+
+  const handleTextChange = elementUpdateHandler('text', 'textContent');
+
+  const handleLinkChange = elementUpdateHandler('banner', 'bannerLink');
+
+  // REUSEABLE FUNCTION FOR UPDATING PADDING, POSITION, AND BORDER
+  const handleSideUpdate = useCallback(
+    (
+      property: 'padding' | 'position' | 'border',
+      side: string,
+      value: number
+    ) => {
+      if (
+        selectedElement &&
+        elements[selectedElement]?.[currentViewport]?.[property]
+      ) {
+        updateElementStyle(selectedElement, currentViewport, {
+          [property]: {
+            ...elements[selectedElement][currentViewport][property],
+            [side]: value
+          }
+        });
       }
-    };
+    },
+    [currentViewport, elements, selectedElement, updateElementStyle]
+  );
 
-    reader.readAsDataURL(file);
-  }
+  const handlePaddingChange = useCallback(
+    (side: string, value: number) => handleSideUpdate('padding', side, value),
+    [handleSideUpdate]
+  );
 
-  function handleAltTextChange(value: string) {
-    if (selectedElement === 'image') {
-      updateElementStyle(selectedElement, currentViewport, {
-        imgAlt: value
-      });
-    }
-  }
+  const handlePositionChange = useCallback(
+    (side: string, value: number) => handleSideUpdate('position', side, value),
+    [handleSideUpdate]
+  );
 
-  return {
-    selectedElementStyle,
-    handleBorderChange,
-    fontWeightsToRender,
-    handleBgColorChange,
-    handleBorderColorChange,
-    handleImageChange,
-    handleColorChange,
-    handleFontChange,
-    handleDirChange,
-    handleFontSizeChange,
-    handleFontWeightChange,
-    handleHeightChange,
-    handleLetterSpacingChange,
-    handleLineHeightChange,
-    handlePositionChange,
-    handlePaddingChange,
-    handleTextChange,
-    handleWidthChange,
-    handleLinkChange,
-    handleAltTextChange,
-    selectedElement
-  };
+  const handleBorderChange = useCallback(
+    (side: string, value: number) => handleSideUpdate('border', side, value),
+    [handleSideUpdate]
+  );
+
+  const handleViewportChange = useCallback(
+    (event: React.ChangeEvent<HTMLInputElement>) => {
+      setCurrentViewport(event.target.value as ViewportType);
+    },
+    [setCurrentViewport]
+  );
+
+  const handleFontChange = useCallback(
+    (fontValue: string) => {
+      setSelectedFont(fontValue);
+      if (selectedElement === 'text') {
+        updateElementStyle(selectedElement, currentViewport, {
+          fontFamily: fontValue
+        });
+      }
+    },
+    [currentViewport, selectedElement, updateElementStyle]
+  );
+
+  const handleWidthChange = useCallback(
+    (value: number) => {
+      if (selectedElement) {
+        updateElementStyle(selectedElement, currentViewport, {
+          width: value
+        });
+      }
+    },
+    [currentViewport, selectedElement, updateElementStyle]
+  );
+
+  const handleHeightChange = useCallback(
+    (value: number) => {
+      if (selectedElement) {
+        updateElementStyle(selectedElement, currentViewport, {
+          height: value
+        });
+      }
+    },
+    [currentViewport, selectedElement, updateElementStyle]
+  );
+
+  const handleBgColorChange = useCallback(
+    (color: string) => {
+      if (selectedElement === 'banner') {
+        updateElementStyle(selectedElement, currentViewport, {
+          backgroundColor: color,
+          backgroundImage: ''
+        });
+      }
+    },
+    [currentViewport, selectedElement, updateElementStyle]
+  );
+
+  const handleBorderColorChange = useCallback(
+    (borderColor: string) => {
+      if (selectedElement) {
+        updateElementStyle(selectedElement, currentViewport, { borderColor });
+      }
+    },
+    [currentViewport, selectedElement, updateElementStyle]
+  );
+
+  const handleImageChange = useCallback(
+    (file: File) => {
+      if (!selectedElement || !file) return;
+
+      const reader = new FileReader();
+
+      reader.onload = (e) => {
+        if (e.target?.result) {
+          const result = e.target.result as string;
+
+          if (selectedElement === 'banner') {
+            updateElementStyle(selectedElement, currentViewport, {
+              backgroundImage: result,
+              backgroundColor: undefined
+            });
+          } else if (selectedElement === 'image') {
+            updateElementStyle(selectedElement, currentViewport, {
+              src: result
+            });
+          }
+        }
+      };
+
+      reader.readAsDataURL(file);
+    },
+    [currentViewport, selectedElement, updateElementStyle]
+  );
+
+  return useMemo(
+    () => ({
+      currentViewport,
+      handleViewportChange,
+      selectedElementStyle,
+      handleBorderChange,
+      fontWeightsToRender,
+      handleBgColorChange,
+      handleBorderColorChange,
+      handleImageChange,
+      handleColorChange,
+      handleFontChange,
+      handleDirChange,
+      handleFontSizeChange,
+      handleFontWeightChange,
+      handleHeightChange,
+      handleLetterSpacingChange,
+      handleLineHeightChange,
+      handlePositionChange,
+      handlePaddingChange,
+      handleTextChange,
+      handleWidthChange,
+      handleLinkChange,
+      handleAltTextChange,
+      selectedElement
+    }),
+    [
+      currentViewport,
+      fontWeightsToRender,
+      handleAltTextChange,
+      handleBgColorChange,
+      handleBorderChange,
+      handleBorderColorChange,
+      handleColorChange,
+      handleDirChange,
+      handleFontChange,
+      handleFontSizeChange,
+      handleFontWeightChange,
+      handleHeightChange,
+      handleImageChange,
+      handleLetterSpacingChange,
+      handleLineHeightChange,
+      handleLinkChange,
+      handlePaddingChange,
+      handlePositionChange,
+      handleTextChange,
+      handleViewportChange,
+      handleWidthChange,
+      selectedElement,
+      selectedElementStyle
+    ]
+  );
 }

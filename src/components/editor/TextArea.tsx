@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { memo } from 'react';
 import './styles/TextArea.css';
 
 type TextAreaProps = {
@@ -7,22 +7,19 @@ type TextAreaProps = {
   onChange: (value: string) => void;
   value?: string;
   className?: string;
-  disabled: boolean;
+  disabled?: boolean;
   id: string;
 };
 
-export default function TextArea({
+function TextArea({
   label,
   placeholder,
   onChange,
-  value,
-  className,
-  disabled,
+  value = '',
+  className = '',
+  disabled = false,
   id
 }: TextAreaProps) {
-  const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) =>
-    onChange(e.target.value);
-
   return (
     <label
       htmlFor={`${id}-input`}
@@ -30,9 +27,9 @@ export default function TextArea({
       {label}
       <textarea
         id={`${id}-input`}
-        className={`text-area-input ${className}`}
+        className='text-area-input'
         value={value}
-        onChange={handleChange}
+        onChange={(e) => onChange(e.target.value)}
         placeholder={placeholder}
         data-testid={`${id}-input`}
         {...(disabled && { disabled: true })}
@@ -40,3 +37,5 @@ export default function TextArea({
     </label>
   );
 }
+
+export default memo(TextArea);

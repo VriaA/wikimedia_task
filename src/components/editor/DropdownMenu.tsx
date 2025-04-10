@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect, useCallback, memo } from 'react';
 import DropdownIcon from '../../assets/dropdown_icon.svg?react';
 import CheckIcon from '../../assets/check.svg?react';
 import type { Option } from '../../types/editor';
@@ -14,32 +14,26 @@ type DropdownMenuProps = {
   disabled?: boolean;
 };
 
-export default function DropdownMenu({
+function DropdownMenu({
   id,
   label,
   value = '',
   onChange,
   options,
-  className,
-  disabled
+  className = '',
+  disabled = false
 }: DropdownMenuProps) {
   const [isOpen, setIsOpen] = useState(false);
-  const [selectedOption, setSelectedOption] = useState<Option | null>(null);
   const [focusedIndex, setFocusedIndex] = useState<number>(-1);
-  const dropdownRef = useRef<HTMLButtonElement>(null);
-  const optionsRef = useRef<(HTMLLIElement | null)[]>([]);
   const [announcement, setAnnouncement] = useState<string | null>(null);
+  const dropdownRef = useRef<HTMLButtonElement>(null);
+  const selectedOption = options.find((opt) => opt.value === value);
 
   // SETS THE FOCUS INDEX ON FIRST RENDER
   useEffect(() => {
     const initialIndex = options.findIndex((option) => option.value === value);
     setFocusedIndex(initialIndex > -1 ? initialIndex : 0);
   }, [options, value]);
-
-  // SETS SELECTED OPTION
-  useEffect(() => {
-    setSelectedOption(options.find((option) => option.value === value) || null);
-  }, [value, options]);
 
   // CLOSES THE DROPDOWN OPTIONS ON CLICK OUTSIDE
   useEffect(() => {
@@ -65,71 +59,90 @@ export default function DropdownMenu({
     );
   };
 
-  function handleOptionClick(option: Option, index: number) {
-    setSelectedOption(option);
-    index >= 0 && setFocusedIndex(index);
-    onChange(option.value);
-    dropdownRef.current?.focus();
-  }
+  const handleOptionClick = useCallback(
+    (option: Option, index: number) => {
+      index >= 0 && setFocusedIndex(index);
+      onChange(option.value);
+      dropdownRef.current?.focus();
+    },
+    [onChange]
+  );
 
-  function gotoNextOption(index: number) {
-    const nextIndex = (index + 1) % options.length;
-    setFocusedIndex(nextIndex);
-  }
+  const gotoNextOption = useCallback(
+    (index: number) => {
+      const nextIndex = (index + 1) % options.length;
+      setFocusedIndex(nextIndex);
+    },
+    [options.length]
+  );
 
-  function gotoPreviousOption(index: number) {
-    const prevIndex = (index - 1 + options.length) % options.length;
-    setFocusedIndex(prevIndex);
-  }
+  const gotoPreviousOption = useCallback(
+    (index: number) => {
+      const prevIndex = (index - 1 + options.length) % options.length;
+      setFocusedIndex(prevIndex);
+    },
+    [options.length]
+  );
 
-  function handleDropdownKeyDown(e: React.KeyboardEvent<HTMLButtonElement>) {
-    if (!isOpen && ['ArrowDown', 'ArrowUp', 'Enter', ' '].includes(e.key)) {
-      e.preventDefault();
-      setIsOpen(true);
-      setAnnouncement(`${label} dropdown menu is now open.`);
-      return;
-    }
-
-    switch (e.key) {
-      case 'ArrowDown':
+  const handleDropdownKeyDown = useCallback(
+    (e: React.KeyboardEvent<HTMLButtonElement>) => {
+      if (!isOpen && ['ArrowDown', 'ArrowUp', 'Enter', ' '].includes(e.key)) {
         e.preventDefault();
-        gotoNextOption(focusedIndex);
-        break;
-      case 'ArrowUp':
-        e.preventDefault();
-        gotoPreviousOption(focusedIndex);
-        break;
-      case 'Enter':
-      case ' ':
-      case 'Tab':
-        if (!isOpen) return;
-        e.preventDefault();
-        handleOptionClick(options[focusedIndex], focusedIndex);
-        setIsOpen(false);
-        setAnnouncement(`${label} dropdown menu is now closed.`);
-        break;
-      case 'Escape':
-        if (isOpen) {
+        setIsOpen(true);
+        setAnnouncement(`${label} dropdown menu is now open.`);
+        return;
+      }
+
+      switch (e.key) {
+        case 'ArrowDown':
+          e.preventDefault();
+          gotoNextOption(focusedIndex);
+          break;
+        case 'ArrowUp':
+          e.preventDefault();
+          gotoPreviousOption(focusedIndex);
+          break;
+        case 'Enter':
+        case ' ':
+        case 'Tab':
+          if (!isOpen) return;
+          e.preventDefault();
+          handleOptionClick(options[focusedIndex], focusedIndex);
           setIsOpen(false);
           setAnnouncement(`${label} dropdown menu is now closed.`);
-        }
-        break;
-      case 'Home':
-        isOpen && setFocusedIndex(0);
-        break;
-      case 'End':
-        isOpen && setFocusedIndex(options.length - 1);
-        break;
-      default:
-        if (isOpen && /^[a-z0-9]$/i.test(e.key)) {
-          const char = e.key.toLowerCase();
-          const foundIndex = options.findIndex((option) =>
-            option.label.toLowerCase().startsWith(char)
-          );
-          if (foundIndex > -1) setFocusedIndex(foundIndex);
-        }
-    }
-  }
+          break;
+        case 'Escape':
+          if (isOpen) {
+            setIsOpen(false);
+            setAnnouncement(`${label} dropdown menu is now closed.`);
+          }
+          break;
+        case 'Home':
+          isOpen && setFocusedIndex(0);
+          break;
+        case 'End':
+          isOpen && setFocusedIndex(options.length - 1);
+          break;
+        default:
+          if (isOpen && /^[a-z0-9]$/i.test(e.key)) {
+            const char = e.key.toLowerCase();
+            const foundIndex = options.findIndex((option) =>
+              option.label.toLowerCase().startsWith(char)
+            );
+            if (foundIndex > -1) setFocusedIndex(foundIndex);
+          }
+      }
+    },
+    [
+      focusedIndex,
+      gotoNextOption,
+      gotoPreviousOption,
+      handleOptionClick,
+      isOpen,
+      label,
+      options
+    ]
+  );
 
   const triggerText = selectedOption
     ? selectedOption.label
@@ -182,9 +195,6 @@ export default function DropdownMenu({
                 className={`dropdown-option ${isFocused ? 'focused-option' : ''}`}
                 role='option'
                 key={option.value}
-                ref={(el) => {
-                  optionsRef.current[index] = el;
-                }}
                 data-testid={option.id}
                 onClick={() => handleOptionClick(option, index)}
                 style={option.style}
@@ -211,3 +221,5 @@ export default function DropdownMenu({
     </div>
   );
 }
+
+export default memo(DropdownMenu);

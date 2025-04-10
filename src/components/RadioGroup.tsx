@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { memo } from 'react';
 import './styles/RadioGroup.css';
 
 type RadioOption = {
@@ -16,7 +16,7 @@ type RadioGroupProps = {
   direction?: 'row' | 'column';
 };
 
-export default function RadioGroup({
+function RadioGroup({
   heading,
   name,
   options,
@@ -32,25 +32,27 @@ export default function RadioGroup({
       <div
         className='radio-group'
         style={{ flexDirection: direction === 'row' ? 'row' : 'column' }}>
-        {options.map((option) => (
+        {options.map(({ id, label, value: optionValue }) => (
           <label
-            key={option.id}
-            htmlFor={option.id}
+            key={id}
+            htmlFor={id}
             className='radio-option'>
             <input
               type='radio'
-              id={option.id}
+              id={id}
               name={name}
-              value={option.value}
-              checked={value === option.value}
+              value={optionValue}
+              checked={value === optionValue}
               onChange={onChange}
               className='radio-input'
-              data-testid={option.id}
+              data-testid={id}
             />
-            {option.label}
+            {label}
           </label>
         ))}
       </div>
     </fieldset>
   );
 }
+
+export default memo(RadioGroup);

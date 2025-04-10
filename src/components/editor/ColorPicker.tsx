@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useState, useRef, useCallback } from 'react';
 import { ChromePicker } from 'react-color';
 import type { ColorResult } from 'react-color';
 import './styles/ColorPicker.css';
@@ -13,32 +13,28 @@ type ColorPickerProps = {
   id: string;
 };
 
-export default function ColorPicker({
+function ColorPicker({
   elementColor = '#E5E3C9',
   label = 'Color',
   onChange,
-  className,
-  disabled,
+  className = '',
+  disabled = false,
   id
 }: ColorPickerProps) {
   const [isColorPickerOpen, setIsColorPickerOpen] = useState(false);
   const pickerRef = useRef<HTMLDivElement>(null);
   const triggerRef = useRef<HTMLButtonElement>(null);
 
-  const toggleColorPicker = () =>
-    setIsColorPickerOpen((prevIsColorPickerOpen) => !prevIsColorPickerOpen);
-
   // CLOSES COLOR PICKER ON CLICK OUTSIDE
   useEffect(() => {
+    if (!isColorPickerOpen) return;
+
     function handleClose(e: MouseEvent) {
-      if (
-        isColorPickerOpen &&
-        pickerRef.current &&
-        !pickerRef.current.contains(e.target as Node)
-      ) {
+      if (pickerRef.current && !pickerRef.current.contains(e.target as Node)) {
         setIsColorPickerOpen(false);
       }
     }
+
     document.addEventListener('click', handleClose);
     return () => document.removeEventListener('click', handleClose);
   }, [isColorPickerOpen]);
@@ -52,16 +48,23 @@ export default function ColorPicker({
     colorInput.focus();
   }, [isColorPickerOpen]);
 
-  function handleChange(newColor: ColorResult) {
-    const hexColor = newColor.hex.toUpperCase();
-    onChange(hexColor);
-  }
+  const toggleColorPicker = useCallback(() => {
+    setIsColorPickerOpen((prevIsColorPickerOpen) => !prevIsColorPickerOpen);
+  }, []);
 
-  function closeOnKeyPress(e: React.KeyboardEvent) {
+  const handleChange = useCallback(
+    (newColor: ColorResult) => {
+      const hexColor = newColor.hex.toUpperCase();
+      onChange(hexColor);
+    },
+    [onChange]
+  );
+
+  const closeOnKeyPress = useCallback((e: React.KeyboardEvent) => {
     if (e.key !== 'Escape') return;
     e.preventDefault();
     setIsColorPickerOpen(false);
-  }
+  }, []);
 
   return (
     <div
@@ -123,3 +126,5 @@ export default function ColorPicker({
     </div>
   );
 }
+
+export default React.memo(ColorPicker);

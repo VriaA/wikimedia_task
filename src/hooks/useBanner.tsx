@@ -1,4 +1,10 @@
-import React, { useContext, useState, useEffect } from 'react';
+import React, {
+  useContext,
+  useState,
+  useEffect,
+  useCallback,
+  useMemo
+} from 'react';
 import type { AppContext } from '../contexts/context';
 import { appContext, bannerContext } from '../contexts/context';
 import {
@@ -36,10 +42,13 @@ export default function useBanner(
   const textStyle = getCurrenttextStyle(textStyles);
   const imageStyle = getCurrentImageStyle(imageStyles);
 
-  const bannerPosition =
-    selectedElement && mode === 'edit'
-      ? { position: 'sticky' as const, top: '20px' }
-      : {};
+  const bannerPosition = useMemo(
+    () =>
+      selectedElement && mode === 'edit'
+        ? { position: 'sticky' as const, top: '20px' }
+        : {},
+    [mode, selectedElement]
+  );
 
   // FOCUSES ON THE BANNER WHEN THE MODE IS SWITCHED TO EDIT
   useEffect(() => {
@@ -124,39 +133,44 @@ export default function useBanner(
 
   // CHECKS CONTRAST AND CHANGES CONTRAST MESSAGE VISIBILITY ACCORDINGLY
   useEffect(() => {
-    if (bannerStyle.backgroundColor && textStyle.color) {
-      const fontSize = textStyle.fontSize;
-      const isBold =
-        textStyle.fontWeight &&
-        ['700', '800', '900'].includes(textStyle.fontWeight);
+    if (
+      bannerStyle.backgroundImage ||
+      !bannerStyle.backgroundColor ||
+      !textStyle.color
+    )
+      return;
+    const fontSize = textStyle.fontSize;
+    const isBold =
+      textStyle.fontWeight &&
+      ['700', '800', '900'].includes(textStyle.fontWeight);
 
-      // WCAG LARGE TEXT DEFINITION (19pts or 14pts bold)
-      const isLargeText =
-        fontSize && (fontSize >= 24 || (fontSize >= 18.67 && isBold));
+    // WCAG LARGE TEXT DEFINITION (19pts or 14pts bold)
+    const isLargeText =
+      fontSize && (fontSize >= 24 || (fontSize >= 18.67 && isBold));
 
-      const isValidContrastRatio = tinycolor.isReadable(
-        textStyle.color,
-        bannerStyle.backgroundColor,
-        {
-          level: 'AA',
-          size: isLargeText ? 'large' : 'small'
-        }
-      );
-      setCanShowContrastMessage(!isValidContrastRatio);
-    }
+    const isValidContrastRatio = tinycolor.isReadable(
+      textStyle.color,
+      bannerStyle.backgroundColor,
+      {
+        level: 'AA',
+        size: isLargeText ? 'large' : 'small'
+      }
+    );
+    setCanShowContrastMessage(!isValidContrastRatio);
   }, [
     textStyle.color,
     bannerStyle.backgroundColor,
+    bannerStyle.backgroundImage,
     textStyle.fontSize,
     textStyle.fontWeight
   ]);
 
   // TOGGLES MODE BETWEEN EDIT & PREVIEW
-  function toggleMode() {
+  const toggleMode = useCallback(() => {
     setMode((prevMode) => (prevMode === 'preview' ? 'edit' : 'preview'));
-  }
+  }, [setMode]);
 
-  function selectElement(target: HTMLElement) {
+  const selectElement = useCallback((target: HTMLElement) => {
     let elementType: BannerElementType = null;
     switch (target.dataset.element) {
       case 'text':
@@ -170,54 +184,78 @@ export default function useBanner(
         break;
     }
     return elementType;
-  }
+  }, []);
 
   // SELECTS BANNER ELEMENT ON CLICK
-  function handleBannerClick(e: React.MouseEvent) {
-    if (mode !== 'edit') return;
-    const target = e.target as HTMLElement;
-    const selectedElement = selectElement(target);
-    setSelectedElement(selectedElement);
-  }
+  const handleBannerClick = useCallback(
+    (e: React.MouseEvent) => {
+      if (mode !== 'edit') return;
+      const target = e.target as HTMLElement;
+      const selectedElement = selectElement(target);
+      setSelectedElement(selectedElement);
+    },
+    [mode, setSelectedElement, selectElement]
+  );
 
   // SELECTS OR DESELECTS BANNER ELEMENT ON KEY PRESS
-  function handleKeyDown(e: React.KeyboardEvent) {
-    if (mode !== 'edit') return;
+  const handleKeyDown = useCallback(
+    (e: React.KeyboardEvent) => {
+      if (mode !== 'edit') return;
 
-    if (selectedElement && e.key === 'Escape') {
-      e.preventDefault();
-      setSelectedElement(null);
-      return;
-    }
+      if (selectedElement && e.key === 'Escape') {
+        e.preventDefault();
+        setSelectedElement(null);
+        return;
+      }
 
-    if (e.key === 'Enter' || e.key === ' ') {
-      e.preventDefault();
-      const newSelectedElement = selectElement(e.target as HTMLElement);
-      setSelectedElement(newSelectedElement);
-    }
-  }
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        const newSelectedElement = selectElement(e.target as HTMLElement);
+        setSelectedElement(newSelectedElement);
+      }
+    },
+    [mode, setSelectedElement, selectedElement, selectElement]
+  );
 
-  function handleCloseBtnClick() {
+  const handleCloseBtnClick = useCallback(() => {
     setSelectedElement(null);
     bannerRef?.current && bannerRef?.current.focus();
-  }
+  }, [bannerRef, setSelectedElement]);
 
-  return {
-    handleCloseBtnClick,
-    canShowContrastMessage,
-    setCanShowContrastMessage,
-    selectedElement,
-    isVisible,
-    setIsVisible,
-    toggleMode,
-    handleBannerClick,
-    handleKeyDown,
-    bannerStyle,
-    textStyle,
-    imageStyle,
-    bannerPosition,
-    bannerStyles,
-    textStyles,
-    imageStyles
-  };
+  return useMemo(
+    () => ({
+      handleCloseBtnClick,
+      canShowContrastMessage,
+      setCanShowContrastMessage,
+      selectedElement,
+      isVisible,
+      setIsVisible,
+      toggleMode,
+      handleBannerClick,
+      handleKeyDown,
+      bannerStyle,
+      textStyle,
+      imageStyle,
+      bannerPosition,
+      bannerStyles,
+      textStyles,
+      imageStyles
+    }),
+    [
+      bannerPosition,
+      bannerStyle,
+      bannerStyles,
+      canShowContrastMessage,
+      handleBannerClick,
+      handleCloseBtnClick,
+      handleKeyDown,
+      imageStyle,
+      imageStyles,
+      isVisible,
+      selectedElement,
+      textStyle,
+      textStyles,
+      toggleMode
+    ]
+  );
 }
