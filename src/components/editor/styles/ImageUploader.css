@@ -14,8 +14,7 @@
 	padding: 12px 0;
 	height: 140px;
 	background-color: #eaf3ff;
-	border: 1px solid #36c;
-	border-style: dashed;
+	border: 1px dashed #36c;
 	border-radius: 2px;
 	cursor: pointer;
 	transition: background-color 0.2s ease;
@@ -45,6 +44,7 @@
 .browse-btn {
 	color: #36c;
 	border-width: 0;
+	font-size: 1.4rem;
 }
 
 .image-uploader-size-limit {
