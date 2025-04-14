@@ -35,9 +35,9 @@ export default function Banner() {
         className='banner-wrapper'
         {...(!isPreviewMode && { role: 'region' })}
         {...(!isPreviewMode && { 'aria-labelledby': 'edit-mode-heading' })}
-        style={{ display: isVisible ? 'block' : 'none', ...bannerPosition }}
-        dir={bannerConfig.dir}>
+        style={{ display: isVisible ? 'block' : 'none', ...bannerPosition }}>
         <div
+          dir={bannerConfig.dir}
           {...(isPreviewMode && { role: 'banner' })}
           ref={bannerRef}
           className={`banner ${selectedElement === 'banner' ? 'selected' : ''}`}

@@ -144,4 +144,32 @@ describe('Editor Typography Section', () => {
       expect(bannerText).toHaveStyle({ letterSpacing: '0.2px' });
     });
   });
+
+  describe('Banner Text Direction Selection', () => {
+    it('updates the Text Direction of the banner when a different direction is selected from the dropdown menu', async () => {
+      const banner = screen.getByTestId('banner');
+      expect(banner).toBeInTheDocument();
+
+      await userEvent.click(banner);
+
+      await waitFor(() => {
+        expect(banner).toHaveClass('selected');
+      });
+
+      const textDirectionDropdown = screen.getByTestId('dir-dropdown-trigger');
+
+      await userEvent.click(textDirectionDropdown);
+
+      await waitFor(() => {
+        const textDirectionOptions = screen.getByTestId('dir-dropdown-options');
+        expect(textDirectionOptions).toBeInTheDocument();
+      });
+
+      const newDirection = await screen.findByTestId('rtl');
+
+      await userEvent.click(newDirection);
+
+      expect(banner).toHaveAttribute('dir', 'rtl');
+    });
+  });
 });
