@@ -21,7 +21,8 @@ import {
 import tinycolor from 'tinycolor2';
 
 export default function useBanner(
-  bannerRef?: React.RefObject<HTMLDivElement | null>
+  bannerRef?: React.RefObject<HTMLDivElement | null>,
+  bannerWrapperRef?: React.RefObject<HTMLDivElement | null>
 ): UseBanner {
   const { mode, setMode } = useContext(appContext) as AppContext;
   const { elements, selectedElement, setSelectedElement, currentViewport } =
@@ -98,8 +99,8 @@ export default function useBanner(
       const clickTarget = event.target as HTMLElement;
       if (
         mode === 'edit' &&
-        bannerRef?.current &&
-        !bannerRef.current.contains(clickTarget) &&
+        bannerWrapperRef?.current &&
+        !bannerWrapperRef.current.contains(clickTarget) &&
         !editor.contains(clickTarget)
       ) {
         setSelectedElement(null);
@@ -110,7 +111,7 @@ export default function useBanner(
     return () => {
       document.removeEventListener('click', handleClickOutside);
     };
-  }, [mode, setSelectedElement, bannerRef]);
+  }, [mode, setSelectedElement, bannerWrapperRef]);
 
   // SETS THE BANNER WIDTH BASED ON THE SELECTED VIEWPORT
   // BANNER SPANS THE FULL VIEWPORT WIDTH IN LARGE SCREENS

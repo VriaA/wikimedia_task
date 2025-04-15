@@ -2,6 +2,7 @@
 	padding: 24px;
 	width: fit-content;
 	margin-inline: auto;
+	margin-top: 24px;
 	gap: 32px;
 }
 
@@ -157,6 +158,10 @@
 /* ============================== MEDIA QUERIES ============================== */
 
 @media screen and ( min-width: 1200px ) {
+	.editor-wrapper {
+		margin-top: 44px;
+	}
+
 	.customization-form {
 		width: 948px;
 	}

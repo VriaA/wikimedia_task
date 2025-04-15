@@ -12,6 +12,7 @@ import Message from '../Message';
 
 export default function Banner() {
   const bannerRef = useRef<HTMLDivElement | null>(null);
+  const bannerWrapperRef = useRef<HTMLDivElement | null>(null);
   const { mode } = useContext(appContext) as AppContext;
   const {
     canShowContrastMessage,
@@ -26,12 +27,13 @@ export default function Banner() {
     currentBannerStyle,
     bannerPosition,
     bannerConfig
-  } = useBanner(bannerRef);
+  } = useBanner(bannerRef, bannerWrapperRef);
   const isPreviewMode = mode === 'preview';
 
   return (
     <>
       <div
+        ref={bannerWrapperRef}
         className='banner-wrapper'
         {...(!isPreviewMode && { role: 'region' })}
         {...(!isPreviewMode && { 'aria-labelledby': 'edit-mode-heading' })}

@@ -1,6 +1,6 @@
 .banner-wrapper {
 	width: 100%;
-	padding: 24px;
+	padding: 24px 24px 1px 24px;
 	z-index: 100;
 	overflow: auto;
 }
@@ -136,6 +136,6 @@
 
 @media screen and ( min-width: 1200px ) {
 	.banner-wrapper {
-		padding: 24px 44px;
+		padding: 24px 44px 1px 44px;
 	}
 }
